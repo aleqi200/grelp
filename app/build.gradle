@@ -28,4 +28,5 @@ dependencies {
     // Android Async Http for sending async network requests
     compile 'com.loopj.android:android-async-http:1.4.8'
     compile "org.apache.httpcomponents:httpcore:4.3.2"
+    compile 'commons-io:commons-io:2.4'
 }

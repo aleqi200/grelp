@@ -1,4 +1,4 @@
-package com.grelp.grelp.model;
+package com.grelp.grelp.models;
 
 public class Merchant {
     private final String id;

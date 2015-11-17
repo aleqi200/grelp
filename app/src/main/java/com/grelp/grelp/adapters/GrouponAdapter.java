@@ -1,4 +1,4 @@
-package com.grelp.grelp.adapter;
+package com.grelp.grelp.adapters;
 
 import android.content.Context;
 import android.graphics.Paint;
@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.grelp.grelp.R;
-import com.grelp.grelp.model.Groupon;
+import com.grelp.grelp.models.Groupon;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
