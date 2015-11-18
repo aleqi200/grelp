@@ -1,11 +1,8 @@
-package com.grelp.grelp;
+package com.grelp.grelp.activities;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
@@ -16,12 +13,12 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.grelp.grelp.adapter.GrouponAdapter;
-import com.grelp.grelp.listener.InfiniteScrollListener;
-import com.grelp.grelp.model.Groupon;
-import com.loopj.android.http.AsyncHttpClient;
+import com.grelp.grelp.R;
+import com.grelp.grelp.adapters.GrouponAdapter;
+import com.grelp.grelp.listeners.InfiniteScrollListener;
+import com.grelp.grelp.models.Groupon;
+import com.grelp.grelp.utility.GrouponClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,17 +26,15 @@ import org.json.JSONObject;
 
 import org.apache.http.Header;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
 public class GrouponActivity extends AppCompatActivity {
-    private static final String GROUPON_API = "http://api.groupon.com/v2/deals/search";
     private static final String LOG_TAG = "GrouponActivity";
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:DDZ");
+
     private ListView lvGroupons;
     private GrouponAdapter grouponAdapter;
+    private GrouponClient grouponClient;
     private List<Groupon> groupons;
 
     @Override
@@ -47,6 +42,7 @@ public class GrouponActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groupon);
         groupons = new LinkedList<>();
+        grouponClient = GrouponClient.getInstance();
         lvGroupons = (ListView) findViewById(R.id.lvGroupons);
         grouponAdapter = new GrouponAdapter(this, groupons);
         lvGroupons.setAdapter(grouponAdapter);
@@ -64,6 +60,14 @@ public class GrouponActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        lvGroupons.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent yelpIntent = new Intent(GrouponActivity.this, YelpActivity.class);
+                yelpIntent.putExtra("businessId", "dummy");
+                startActivity(yelpIntent);
+            }
+        });
         getGroupons(0);
     }
 
@@ -72,27 +76,8 @@ public class GrouponActivity extends AppCompatActivity {
             Toast.makeText(this, "Network not available", Toast.LENGTH_LONG);
             return;
         }
-        Location location = getLocation();
-        AsyncHttpClient httpClient = new AsyncHttpClient();
-        RequestParams requestParams = new RequestParams();
-        String dateTime = dateFormat.format(new Date());
-        requestParams.add("context", "mobile_local");
-        requestParams.add("datetime", dateTime);
-        requestParams.add("client_id", "d62dac53d0601f8c740dcc12613396b38a1a5f8a");
-        requestParams.add("consumer_id", "5b2a214e-5c83-11e3-bbd1-0025906127f6");
-        if (location != null) {
-            requestParams.add("lat", "" + location.getLatitude());
-            requestParams.add("lng", "" + location.getLongitude());
-        } else {
-            requestParams.add("filter", "division:san-francisco");
-        }
-        requestParams.add("max_results", "" + 200);
-        requestParams.add("filter_start_time", dateTime);
-        requestParams.add("filter_end_time", dateTime);
-        requestParams.add("show", "default,locations");
-        requestParams.add("offset", "" + offset);
 
-        httpClient.get(GROUPON_API, requestParams, new JsonHttpResponseHandler() {
+        grouponClient.getDeals(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
@@ -107,9 +92,9 @@ public class GrouponActivity extends AppCompatActivity {
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable,
                                   JSONObject response) {
-                Log.e(LOG_TAG, "Error while retrieving groupons from: " + GROUPON_API, throwable);
+                Log.e(LOG_TAG, "Error while retrieving groupons" + Log.getStackTraceString(throwable));
             }
-        });
+        }, null, offset);
     }
 
     //Check to see if network is available before making external service calls

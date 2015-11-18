@@ -1,4 +1,4 @@
-package com.grelp.grelp.model;
+package com.grelp.grelp.models;
 
 import org.json.JSONArray;
 import org.json.JSONException;

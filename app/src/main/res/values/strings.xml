@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Grelp</string>
+    <string name="title_activity_yelp">YelpActivity</string>
     <string name="title_activity_groupon_detail">GrouponDetailActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 </resources>
