@@ -1,12 +1,15 @@
 package com.grelp.grelp.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -48,6 +51,14 @@ public class GrouponActivity extends AppCompatActivity {
             public boolean onLoadMore(int page, int totalItemsCount) {
                 getGroupons(page);
                 return true;
+            }
+        });
+        lvGroupons.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent yelpIntent = new Intent(GrouponActivity.this, YelpActivity.class);
+                yelpIntent.putExtra("businessId", "dummy");
+                startActivity(yelpIntent);
             }
         });
         getGroupons(0);
