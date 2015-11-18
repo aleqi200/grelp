@@ -55,16 +55,9 @@ public class GrouponActivity extends AppCompatActivity {
         });
         lvGroupons.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(GrouponActivity.this, GrouponDetailActivity.class);
-                startActivity(intent);
-            }
-        });
-        lvGroupons.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent yelpIntent = new Intent(GrouponActivity.this, YelpActivity.class);
-                yelpIntent.putExtra("businessId", "dummy");
+                yelpIntent.putExtra("businessId", "the-flying-falafel-san-francisco-3");
                 startActivity(yelpIntent);
             }
         });
@@ -73,7 +66,7 @@ public class GrouponActivity extends AppCompatActivity {
 
     public void getGroupons(int offset) {
         if (!isNetworkAvailable()) {
-            Toast.makeText(this, "Network not available", Toast.LENGTH_LONG);
+            Toast.makeText(this, "Network not available", Toast.LENGTH_LONG).show();
             return;
         }
 
