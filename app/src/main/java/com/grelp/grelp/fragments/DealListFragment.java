@@ -1,50 +1,81 @@
-package com.grelp.grelp.activities;
+package com.grelp.grelp.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v7.app.AppCompatActivity;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.grelp.grelp.R;
+import com.grelp.grelp.activities.YelpActivity;
 import com.grelp.grelp.adapters.GrouponAdapter;
 import com.grelp.grelp.listeners.InfiniteScrollListener;
 import com.grelp.grelp.models.Groupon;
 import com.grelp.grelp.utility.GrouponClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
+import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import org.apache.http.Header;
-
 import java.util.LinkedList;
 import java.util.List;
 
-public class GrouponActivity extends AppCompatActivity {
-    private static final String LOG_TAG = "GrouponActivity";
+
+public class DealListFragment extends Fragment {
+    private static final String LOG_TAG = "DealList";
+
+    private Location location;
 
     private ListView lvGroupons;
     private GrouponAdapter grouponAdapter;
     private GrouponClient grouponClient;
     private List<Groupon> groupons;
 
+    public static DealListFragment newInstance(Location location) {
+        DealListFragment fragment = new DealListFragment();
+        Bundle args = new Bundle();
+        args.putParcelable("location", location);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public DealListFragment() {
+        // Required empty public constructor
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_groupon);
-        groupons = new LinkedList<>();
+        if (getArguments() != null) {
+            location = getArguments().getParcelable("location");
+        }
+
         grouponClient = GrouponClient.getInstance();
-        lvGroupons = (ListView) findViewById(R.id.lvGroupons);
-        grouponAdapter = new GrouponAdapter(this, groupons);
+        getGroupons(0);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View v = inflater.inflate(R.layout.fragment_deal_list, container, false);
+
+        lvGroupons = (ListView) v.findViewById(R.id.lvGroupons);
+        groupons = new LinkedList<>();
+        grouponAdapter = new GrouponAdapter(getContext(), groupons);
         lvGroupons.setAdapter(grouponAdapter);
         lvGroupons.setOnScrollListener(new InfiniteScrollListener() {
             @Override
@@ -56,17 +87,20 @@ public class GrouponActivity extends AppCompatActivity {
         lvGroupons.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent yelpIntent = new Intent(GrouponActivity.this, YelpActivity.class);
+                Intent yelpIntent = new Intent(getContext(), YelpActivity.class);
                 yelpIntent.putExtra("businessId", "the-flying-falafel-san-francisco-3");
                 startActivity(yelpIntent);
             }
         });
-        getGroupons(0);
+
+        return v;
     }
 
     public void getGroupons(int offset) {
+        Log.d(LOG_TAG, "getGroupons(offset = " + offset + ")");
+
         if (!isNetworkAvailable()) {
-            Toast.makeText(this, "Network not available", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "Network not available", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -93,26 +127,9 @@ public class GrouponActivity extends AppCompatActivity {
     //Check to see if network is available before making external service calls
     private Boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
     }
 
-    private Location getLocation() {
-        /*LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    public void requestPermissions(@NonNull String[] permissions, int requestCode)
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for Activity#requestPermissions for more details.
-            return null;
-        }
-        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        return location;*/
-        return null;
-    }
 }
