@@ -1,8 +1,6 @@
 package com.grelp.grelp.activities;
 
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -19,9 +17,9 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
-import com.google.android.gms.maps.SupportMapFragment;
 import com.grelp.grelp.R;
 import com.grelp.grelp.fragments.DealListFragment;
+import com.grelp.grelp.fragments.DealMapFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -85,8 +83,10 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             if(position == 0) {
                 return DealListFragment.newInstance(null);
+            } else if (position == 1) {
+                return DealMapFragment.newInstance();
             }
-            return new SupportMapFragment();
+            return null;
         }
 
         @Override
@@ -98,9 +98,9 @@ public class MainActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "Deals";
+                    return "DEALS";
                 case 1:
-                    return "Map";
+                    return "MAP";
             }
             return null;
         }
