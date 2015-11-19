@@ -17,12 +17,14 @@ public class Groupon {
     private final String grid4ImageUrl;
     private final String division;
     private final double distance;
+    private final double lat;
+    private final double lng;
     private final String minPrice;
     private final String minValue;
 
     public Groupon(String id, String uuid, String title, String announcementTitle,
                    String soldQuantity, String grid4ImageUrl, String division, double distance,
-                   String minPrice, String minValue) {
+                   String minPrice, String minValue, double lat, double lng) {
         this.id = id;
         this.uuid = uuid;
         this.title = title;
@@ -33,6 +35,8 @@ public class Groupon {
         this.division = division;
         this.minPrice = minPrice;
         this.minValue = minValue;
+        this.lat = lat;
+        this.lng = lng;
     }
 
     public String getId() {
@@ -75,6 +79,14 @@ public class Groupon {
         return minValue;
     }
 
+    public double getLat() {
+        return lat;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
     public static Groupon fromJSONObject(JSONObject jsonObject) throws JSONException {
         String id = jsonObject.getString("id");
         String uuid = jsonObject.getString("uuid");
@@ -87,15 +99,20 @@ public class Groupon {
         String division = divisionObject.getString("name");
 
         JSONArray locations = jsonObject.getJSONArray("locations");
-        double distance = locations.length() > 0 ? locations.getJSONObject(0).optDouble("distance", 32) : 32.0;
+        JSONObject locationObject = locations.length() > 0 ? locations.getJSONObject(0) : null;
+        double distance =  locationObject != null ? locationObject.optDouble("distance", 32) : 32.0;
 
         JSONArray options = jsonObject.getJSONArray("options");
         double min = Double.MAX_VALUE;
         String minp = null,minv = null;
+        double lat = 0.0, lng = 0.0;
         for (int i = 0; i < options.length(); i++) {
             JSONObject optionObject = options.getJSONObject(i);
             JSONObject priceObject = optionObject.getJSONObject("price");
             JSONObject valueObject = optionObject.getJSONObject("value");
+            JSONArray redemptionLocations = optionObject.getJSONArray("redemptionLocations");
+            lat = redemptionLocations.getJSONObject(0).getDouble("lat");
+            lng = redemptionLocations.getJSONObject(0).getDouble("lng");
             if (priceObject.getDouble("amount") < min) {
                 minp = priceObject.getString("formattedAmount");
                 minv = valueObject.getString("formattedAmount");
@@ -103,7 +120,7 @@ public class Groupon {
         }
 
         Groupon groupon = new Groupon(id, uuid, title, announcementTitle, soldQuantity,
-                                      grid4ImageUrl, division, distance, minp, minv);
+                                      grid4ImageUrl, division, distance, minp, minv, lat, lng);
         return groupon;
     }
 

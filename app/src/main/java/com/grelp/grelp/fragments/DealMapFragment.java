@@ -11,12 +11,13 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.BounceInterpolator;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -30,25 +31,47 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.grelp.grelp.R;
+import com.grelp.grelp.models.Groupon;
+import com.grelp.grelp.utility.GrouponClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.apache.http.Header;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class DealMapFragment extends Fragment implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
+    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+    private final static LatLng DEFAULT_LOCATION = new LatLng(37.4292, -122.1381);
+    private final static String LOG_TAG = "DealMap";
+
+    private GrouponClient grouponClient;
+    private List<Groupon> groupons;
     private SupportMapFragment mapFragment;
     private GoogleMap map;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private long UPDATE_INTERVAL = 60000;  /* 60 secs */
     private long FASTEST_INTERVAL = 5000; /* 5 secs */
-    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     private static final int PERMISSION_REQUEST_CODE = 1;
+    private boolean useGPSLocation = false;
 
     public DealMapFragment() {
-
+        grouponClient = GrouponClient.getInstance();
+        groupons = new LinkedList<>();
     }
 
     public static DealMapFragment newInstance() {
@@ -83,6 +106,7 @@ public class DealMapFragment extends Fragment implements
         };
         getChildFragmentManager().beginTransaction().add(R.id.mpDeals, mapFragment).commit();
         getChildFragmentManager().executePendingTransactions();
+        getGroupons(0);
         return view;
     }
 
@@ -104,6 +128,7 @@ public class DealMapFragment extends Fragment implements
                     .addOnConnectionFailedListener(this).build();
 
             connectClient();
+
         } else {
             Toast.makeText(getActivity(), "Error - Map was null!!", Toast.LENGTH_SHORT).show();
         }
@@ -118,12 +143,81 @@ public class DealMapFragment extends Fragment implements
         }
     }
 
-    private void requestPermission(){
-        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)){
-            Toast.makeText(getContext(),"GPS permission allows us to access location data. Please allow in App Settings for additional functionality.",Toast.LENGTH_LONG).show();
+    private void requestPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION)) {
+            Toast.makeText(getContext(), "GPS permission allows us to access location data. " +
+                    "Please allow in App Settings for additional functionality.", Toast.LENGTH_LONG).show();
         } else {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
         }
+    }
+
+    public void getGroupons(int offset) {
+        Log.d(LOG_TAG, "getGroupons(offset = " + offset + ")");
+
+        grouponClient.getDeals(new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+
+                    JSONArray dealsArray = response.getJSONArray("deals");
+                    groupons.addAll(Groupon.fromJSONArray(dealsArray));
+                    for (Groupon groupon : groupons) {
+                        LatLng point = new LatLng(groupon.getLat(), groupon.getLng());
+                        BitmapDescriptor defaultMarker =
+                                BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
+                        Marker marker = map.addMarker(new MarkerOptions()
+                                .position(point)
+                                .title(groupon.getTitle())
+                                .snippet("" + groupon.getDistance())
+                                .icon(defaultMarker));
+                        dropPinEffect(marker);
+                    }
+                } catch (JSONException e) {
+                    Log.e(LOG_TAG, "Error while parsing json object: " + response, e);
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable,
+                                  JSONObject response) {
+                Log.e(LOG_TAG, "Error while retrieving groupons" + Log.getStackTraceString(throwable));
+            }
+        }, null, offset);
+    }
+
+    private void dropPinEffect(final Marker marker) {
+        // Handler allows us to repeat a code block after a specified delay
+        final android.os.Handler handler = new android.os.Handler();
+        final long start = SystemClock.uptimeMillis();
+        final long duration = 1500;
+
+        // Use the bounce interpolator
+        final android.view.animation.Interpolator interpolator =
+                new BounceInterpolator();
+
+        // Animate marker with a bounce updating its position every 15ms
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                long elapsed = SystemClock.uptimeMillis() - start;
+                // Calculate t for bounce based on elapsed time
+                float t = Math.max(
+                        1 - interpolator.getInterpolation((float) elapsed
+                                / duration), 0);
+                // Set the anchor
+                marker.setAnchor(0.5f, 1.0f + 14 * t);
+
+                if (t > 0.0) {
+                    // Post this event again 15ms from now.
+                    handler.postDelayed(this, 15);
+                } else { // done elapsing, show window
+                    marker.showInfoWindow();
+                }
+            }
+        });
     }
 
     protected void connectClient() {
@@ -205,6 +299,11 @@ public class DealMapFragment extends Fragment implements
     */
     @Override
     public void onConnected(Bundle dataBundle) {
+        if (!useGPSLocation) {
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(DEFAULT_LOCATION, 5);
+            map.animateCamera(cameraUpdate);
+            return;
+        }
         // Display the connection status
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (location != null) {
