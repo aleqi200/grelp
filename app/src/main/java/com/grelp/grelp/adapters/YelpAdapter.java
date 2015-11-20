@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.grelp.grelp.R;
 import com.grelp.grelp.models.YelpReview;
+import com.grelp.grelp.util.PrettyTimePrinter;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -47,7 +48,7 @@ public class YelpAdapter extends ArrayAdapter<YelpReview> {
             Picasso.with(getContext()).load(review.getUser().getProfileUrl()).into(viewHolder.ivYelpProfile);
             Picasso.with(getContext()).load(review.getRatingImageUrl()).into(viewHolder.ivRating);
             viewHolder.tvYelpUserName.setText(review.getUser().getName());
-            viewHolder.tvReviewTimestamp.setText(review.getTimeCreated() + "");
+            viewHolder.tvReviewTimestamp.setText(review.getTimeCreated());
             viewHolder.tvReviewText.setText(review.getExcerpt());
 
         }

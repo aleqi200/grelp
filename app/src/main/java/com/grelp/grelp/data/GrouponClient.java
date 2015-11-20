@@ -1,4 +1,4 @@
-package com.grelp.grelp.utility;
+package com.grelp.grelp.data;
 
 import android.location.Location;
 

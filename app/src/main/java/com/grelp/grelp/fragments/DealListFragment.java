@@ -20,7 +20,7 @@ import com.grelp.grelp.activities.YelpActivity;
 import com.grelp.grelp.adapters.GrouponAdapter;
 import com.grelp.grelp.listeners.InfiniteScrollListener;
 import com.grelp.grelp.models.Groupon;
-import com.grelp.grelp.utility.GrouponClient;
+import com.grelp.grelp.data.GrouponClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;

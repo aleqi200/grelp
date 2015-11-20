@@ -4,11 +4,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 //TODO: Incorporate deal options into the model
 public class Groupon {
+    private final static NumberFormat formatter = new DecimalFormat("#0.0");
+
     private final String id;
     private final String uuid;
     private final String title;
@@ -67,8 +71,8 @@ public class Groupon {
         return division;
     }
 
-    public double getDistance() {
-        return distance;
+    public String getDistance() {
+        return formatter.format(distance);
     }
 
     public String getMinPrice() {

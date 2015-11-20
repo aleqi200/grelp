@@ -13,13 +13,9 @@ import com.grelp.grelp.R;
 import com.grelp.grelp.models.Groupon;
 import com.squareup.picasso.Picasso;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.List;
 
 public class GrouponAdapter extends ArrayAdapter<Groupon> {
-
-    private NumberFormat formatter = new DecimalFormat("#0.0");
 
     static class GrouponViewHolder {
         private ImageView ivDealImage;
@@ -60,7 +56,7 @@ public class GrouponAdapter extends ArrayAdapter<Groupon> {
         }
         viewHolder.tvTitle.setText(groupon.getTitle());
 
-        viewHolder.tvDistance.setText(formatter.format(groupon.getDistance()) + "mi");
+        viewHolder.tvDistance.setText(groupon.getDistance() + "mi");
         viewHolder.tvDivision.setText(groupon.getDivision());
         viewHolder.tvValue.setText(groupon.getMinValue());
         viewHolder.tvValue.setPaintFlags(viewHolder.tvValue.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);

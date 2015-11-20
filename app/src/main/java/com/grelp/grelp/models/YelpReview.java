@@ -1,5 +1,7 @@
 package com.grelp.grelp.models;
 
+import com.grelp.grelp.util.PrettyTimePrinter;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,11 +12,11 @@ import java.util.List;
 public class YelpReview {
     private final double rating;
     private final String excerpt;
-    private final long timeCreated;
+    private final String timeCreated;
     private final String ratingImageUrl;
     private final YelpUser user;
 
-    public YelpReview(double rating, String excerpt, long timeCreated, String ratingImageUrl,
+    public YelpReview(double rating, String excerpt, String timeCreated, String ratingImageUrl,
                       YelpUser user) {
         this.rating = rating;
         this.excerpt = excerpt;
@@ -31,7 +33,7 @@ public class YelpReview {
         return excerpt;
     }
 
-    public long getTimeCreated() {
+    public String getTimeCreated() {
         return timeCreated;
     }
 
@@ -46,7 +48,7 @@ public class YelpReview {
     public static YelpReview fromJSONObject(JSONObject review) throws JSONException {
         String excerpt = review.getString("excerpt");
         double rating = review.getDouble("rating");
-        long timeCreated = review.getLong("time_created");
+        String timeCreated = PrettyTimePrinter.getAbbreviatedTimeSpan(review.getLong("time_created"));
         String ratingImageUrl = review.getString("rating_img_url_small");
         JSONObject userObject = review.getJSONObject("user");
         YelpUser user = YelpUser.fromJSONObject(userObject);

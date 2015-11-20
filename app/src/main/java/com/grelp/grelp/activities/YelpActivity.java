@@ -10,6 +10,7 @@ import com.grelp.grelp.R;
 import com.grelp.grelp.adapters.YelpAdapter;
 import com.grelp.grelp.models.YelpReview;
 import com.grelp.grelp.models.YelpUser;
+import com.grelp.grelp.util.PrettyTimePrinter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,7 @@ public class YelpActivity extends AppCompatActivity {
     }
 
     private void getYelpReviews(String businessId) {
-        yelpAdapter.addAll(getDummyYelpRating());
+        yelpAdapter.addAll(getDummyYelpRatings());
     }
 
     @Override
@@ -58,15 +59,19 @@ public class YelpActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public static YelpReview getDummyYelpRating() {
-        YelpUser user = new YelpUser("3KNNxsQa4uooK5FAj7bVaQ",
-                "http://s3-media3.fl.yelpcdn.com/photo/hk31BkJvJ8qcqoUvZ38rmQ/ms.jpg", "Hilary C.");
-        YelpReview review = new YelpReview(4.0,
-                "One of the owners is a former Sherpa from Nepal who has summitted Mt. Everest " +
-                        "twice. While the restaurant is in a seeder part of the City, " +
-                        "it's also on one...", 1440895245,
-                "http://s3-media4.fl.yelpcdn.com/assets/2/www/img/f62a5be2f902/ico/stars/v1/stars_small_4.png",
-                user);
-        return review;
+    public static List<YelpReview> getDummyYelpRatings() {
+        List<YelpReview> yelpReviews = new ArrayList<>();
+        for (int i = 0; i < 50; i++) {
+            YelpUser user = new YelpUser("3KNNxsQa4uooK5FAj7bVaQ",
+                    "http://s3-media3.fl.yelpcdn.com/photo/hk31BkJvJ8qcqoUvZ38rmQ/ms.jpg", "Hilary C.");
+            YelpReview review = new YelpReview(4.0,
+                    "One of the owners is a former Sherpa from Nepal who has summitted Mt. Everest " +
+                            "twice. While the restaurant is in a seeder part of the City, " +
+                            "it's also on one...", PrettyTimePrinter.getAbbreviatedTimeSpan(1447989992768L),
+                    "http://s3-media4.fl.yelpcdn.com/assets/2/www/img/f62a5be2f902/ico/stars/v1/stars_small_4.png",
+                    user);
+            yelpReviews.add(review);
+        }
+        return yelpReviews;
     }
 }

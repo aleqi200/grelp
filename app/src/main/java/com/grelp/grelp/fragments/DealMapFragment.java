@@ -38,7 +38,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.grelp.grelp.R;
 import com.grelp.grelp.models.Groupon;
-import com.grelp.grelp.utility.GrouponClient;
+import com.grelp.grelp.data.GrouponClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;
