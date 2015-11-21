@@ -2,6 +2,7 @@ package com.grelp.grelp.data;
 
 import android.support.annotation.NonNull;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -30,6 +31,7 @@ public class YelpAPI {
 
     private static final String API_HOST = "api.yelp.com";
     private static final String BUSINESS_PATH = "/v2/business";
+    private static final String SEARCH_PATH = "/v2/search";
 
     private static final String CONSUMER_KEY = "R_9pJ-PZx1APpAXpUj3ncw";
     private static final String CONSUMER_SECRET = "IfhZLHF2LPdOpQCcBVYRmQqF_vc";
@@ -76,7 +78,35 @@ public class YelpAPI {
         client.get(url, params, handler);
     }
 
+    /**
+     * Searches for businesses based on specified query term and lat long
+     * <p/>
+     * See <a href="http://www.yelp.com/developers/documentation/v2/business">Yelp Business API V2</a>
+     * for more info.
+     */
+    public void searchForBusinesses(String term, double lat, double lng,
+                                    AsyncHttpResponseHandler handler) {
+        String url = getUrl(SEARCH_PATH);
+        RequestParams params = new RequestParams();
+        params.add("ll", lat + "," + lng);
+        params.add("term", term);
+        signRequest(params, url);
+
+        client.get(url, params, handler);
+    }
+
     private void signRequest(RequestParams params, String url) {
+        if (params != null) {
+            String paramString = params.toString();
+
+            // Only add the query string if it isn't empty and it
+            // isn't equal to '?'.
+            if (!paramString.equals("") && !paramString.equals("?")) {
+                url += url.contains("?") ? "&" : "?";
+                url += paramString;
+            }
+        }
+
         OAuthRequest oAuthRequest = createOAuthRequest(url);
         Map<String, String> oauthParameters = oAuthRequest.getOauthParameters();
         for (String header : oauthParameters.keySet()) {

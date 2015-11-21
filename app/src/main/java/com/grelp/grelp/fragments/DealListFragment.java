@@ -16,7 +16,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.grelp.grelp.R;
-import com.grelp.grelp.activities.YelpActivity;
+import com.grelp.grelp.activities.GrouponDetailActivity;
 import com.grelp.grelp.adapters.GrouponAdapter;
 import com.grelp.grelp.listeners.InfiniteScrollListener;
 import com.grelp.grelp.models.Groupon;
@@ -85,9 +85,10 @@ public class DealListFragment extends Fragment {
         lvGroupons.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent yelpIntent = new Intent(getContext(), YelpActivity.class);
-                yelpIntent.putExtra("businessId", "the-flying-falafel-san-francisco-3");
-                startActivity(yelpIntent);
+                Intent grpnDetailIntent = new Intent(getContext(), GrouponDetailActivity.class);
+                Groupon groupon = grouponAdapter.getItem(position);
+                grpnDetailIntent.putExtra("groupon", groupon);
+                startActivity(grpnDetailIntent);
             }
         });
 

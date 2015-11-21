@@ -1,21 +1,37 @@
 package com.grelp.grelp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.grelp.grelp.R;
+import com.grelp.grelp.data.GrouponClient;
 import com.grelp.grelp.data.YelpAPI;
+import com.grelp.grelp.models.Groupon;
+import com.grelp.grelp.models.GrouponMerchant;
+import com.grelp.grelp.models.YelpBusiness;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.squareup.picasso.Picasso;
 
 import org.apache.http.Header;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class GrouponDetailActivity extends AppCompatActivity {
+
+    private static final String LOG_TAG = "GrouponDetail";
+    private GrouponClient grouponClient;
+    private Groupon groupon;
+    private GrouponMerchant merchant;
+    private ImageView ivDetailedImage;
+    private ImageView ivYelpBizImage;
+    private TextView tvDetailedTitle;
+    private TextView tvYelpBizTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,24 +39,89 @@ public class GrouponDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_groupon_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        final TextView textView = (TextView) findViewById(R.id.tvYelpBusiness);
-        YelpAPI.getInstance().searchByBusinessId("the-flying-falafel-san-francisco-3", new JsonHttpResponseHandler() {
+        grouponClient = GrouponClient.getInstance();
+
+        setupViews();
+        getGrouponMerchant();
+    }
+
+    private void setupViews() {
+        ivDetailedImage = (ImageView) findViewById(R.id.ivDetailedImage);
+        ivYelpBizImage = (ImageView) findViewById(R.id.ivYelpBizImage);
+        tvDetailedTitle = (TextView) findViewById(R.id.tvDetailedTitle);
+        tvYelpBizTitle = (TextView) findViewById(R.id.tvYelpBizTitle);
+    }
+
+    private void getGrouponMerchant() {
+        groupon = getIntent().getParcelableExtra("groupon");
+        grouponClient.getMerchant(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
-                    String name = response.getString("name");
-                    textView.setText(name);
+                    merchant = GrouponMerchant.fromJSONObject(response.getJSONObject("merchant"));
+                    searchForMerchantOnYelp();
+
                 } catch (JSONException e) {
-                    Toast.makeText(GrouponDetailActivity.this, "could not read json response", Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
                 }
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                Toast.makeText(GrouponDetailActivity.this, "failed request", Toast.LENGTH_LONG).show();
-                super.onFailure(statusCode, headers, throwable, errorResponse);
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Log.e(LOG_TAG, "Error while parsing json object: " + errorResponse, throwable);
+            }
+
+        }, groupon.getMerchant().getId());
+    }
+
+    private void searchForMerchantOnYelp() {
+        YelpAPI.getInstance().searchForBusinesses(merchant.getName(), merchant.getLat(), merchant.getLng(),
+                new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        try {
+                            JSONObject businessObject = response.getJSONArray("businesses").getJSONObject(0);
+                            String businessId = businessObject.getString("id");
+                            getYelpReviews(businessId);
+                        } catch (JSONException e) {
+                            Log.e(LOG_TAG, "Error while parsing json object: " + response, e);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                        Log.e(LOG_TAG, "Error while parsing json object: " + errorResponse, throwable);
+                    }
+                });
+
+    }
+
+    private void getYelpReviews(final String businessId) {
+        YelpAPI.getInstance().searchByBusinessId(businessId, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    YelpBusiness business = YelpBusiness.fromJSONObject(response);
+                    tvDetailedTitle.setText(groupon.getTitle());
+                    tvYelpBizTitle.setText(business.getName());
+                    Picasso.with(GrouponDetailActivity.this).load(groupon.getGrid4ImageUrl()).into(ivDetailedImage);
+                    Picasso.with(GrouponDetailActivity.this).load(business.getImageUrl()).into(ivYelpBizImage);
+
+                } catch (JSONException e) {
+                    Log.e(LOG_TAG, "Error while parsing json object: " + response, e);
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Log.e(LOG_TAG, "Error while parsing json object: " + errorResponse, throwable);
             }
         });
+    }
+
+    public void onClickYelpSection(View view) {
+        Intent yelpIntent = new Intent(this, YelpActivity.class);
+        startActivity(yelpIntent);
     }
 
 }

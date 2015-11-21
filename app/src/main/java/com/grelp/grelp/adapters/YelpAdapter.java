@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.grelp.grelp.R;
 import com.grelp.grelp.models.YelpReview;
-import com.grelp.grelp.util.PrettyTimePrinter;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;

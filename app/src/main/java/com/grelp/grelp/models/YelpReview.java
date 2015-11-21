@@ -49,7 +49,7 @@ public class YelpReview {
         String excerpt = review.getString("excerpt");
         double rating = review.getDouble("rating");
         String timeCreated = PrettyTimePrinter.getAbbreviatedTimeSpan(review.getLong("time_created"));
-        String ratingImageUrl = review.getString("rating_img_url_small");
+        String ratingImageUrl = review.getString("rating_image_small_url");
         JSONObject userObject = review.getJSONObject("user");
         YelpUser user = YelpUser.fromJSONObject(userObject);
         return new YelpReview(rating, excerpt, timeCreated, ratingImageUrl, user);

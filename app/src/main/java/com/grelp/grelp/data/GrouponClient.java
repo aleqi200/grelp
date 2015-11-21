@@ -11,7 +11,7 @@ import java.util.Date;
 
 public class GrouponClient {
 
-    private static final String GROUPON_URL = "http://api.groupon.com";
+    private static final String GROUPON_URL = "https://api.groupon.com";
     private static final String DEALS_SEARCH_URI = "v2/deals/search";
     private static final String MERCHANT_SHOW_URI = "v2/merchants";
     private static final String MERCHANT_SERVICE_URI = "merchantservice/v2.0/merchants";
