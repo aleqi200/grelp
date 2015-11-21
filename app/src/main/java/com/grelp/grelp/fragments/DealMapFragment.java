@@ -64,24 +64,23 @@ public class DealMapFragment extends Fragment implements
     private GoogleMap map;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
-    private long UPDATE_INTERVAL = 60000;  /* 60 secs */
-    private long FASTEST_INTERVAL = 5000; /* 5 secs */
+    private static final long UPDATE_INTERVAL = 60000;  /* 60 secs */
+    private static final long FASTEST_INTERVAL = 5000; /* 5 secs */
     private static final int PERMISSION_REQUEST_CODE = 1;
     private boolean useGPSLocation = false;
 
     public DealMapFragment() {
-        grouponClient = GrouponClient.getInstance();
-        groupons = new LinkedList<>();
     }
 
     public static DealMapFragment newInstance() {
-        DealMapFragment mapFragment = new DealMapFragment();
-        return mapFragment;
+        return new DealMapFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        grouponClient = GrouponClient.getInstance();
+        groupons = new LinkedList<>();
     }
 
     @Override
@@ -90,20 +89,14 @@ public class DealMapFragment extends Fragment implements
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
-        mapFragment = new SupportMapFragment() {
+        mapFragment = new SupportMapFragment();
+        mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
-            public void onActivityCreated(Bundle savedInstanceState) {
-                super.onActivityCreated(savedInstanceState);
-                if (mapFragment != null) {
-                    mapFragment.getMapAsync(new OnMapReadyCallback() {
-                        @Override
-                        public void onMapReady(GoogleMap map) {
-                            loadMap(map);
-                        }
-                    });
-                }
+            public void onMapReady(GoogleMap map) {
+                loadMap(map);
             }
-        };
+        });
+
         getChildFragmentManager().beginTransaction().add(R.id.mpDeals, mapFragment).commit();
         getChildFragmentManager().executePendingTransactions();
         getGroupons(0);
@@ -134,9 +127,9 @@ public class DealMapFragment extends Fragment implements
         }
     }
 
-    private boolean checkPermission(){
+    private boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION);
-        if (result == PackageManager.PERMISSION_GRANTED){
+        if (result == PackageManager.PERMISSION_GRANTED) {
             return true;
         } else {
             return false;
@@ -246,6 +239,7 @@ public class DealMapFragment extends Fragment implements
 
     /**
      * Handle results returned to the FragmentActivity by Google Play services
+     *
      * @param requestCode
      * @param resultCode
      * @param data
@@ -379,21 +373,5 @@ public class DealMapFragment extends Fragment implements
     }
 
     // Define a DialogFragment that displays the error dialog
-    public static class ErrorDialogFragment extends DialogFragment {
-        private Dialog mDialog;
 
-        public ErrorDialogFragment() {
-            super();
-            mDialog = null;
-        }
-
-        public void setDialog(Dialog dialog) {
-            mDialog = dialog;
-        }
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            return mDialog;
-        }
-    }
 }

@@ -17,7 +17,7 @@
         android:theme="@style/AppTheme" >
 
         <activity
-            android:name=".GrouponDetailActivity"
+            android:name=".activities.GrouponDetailActivity"
             android:label="@string/title_activity_groupon_detail"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>

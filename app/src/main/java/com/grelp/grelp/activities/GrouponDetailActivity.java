@@ -1,14 +1,12 @@
-package com.grelp.grelp;
+package com.grelp.grelp.activities;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.grelp.grelp.R;
 import com.grelp.grelp.data.YelpAPI;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
