@@ -39,16 +39,15 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        if (savedInstanceState == null) {
-            mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-            // Set up the ViewPager with the sections adapter.
-            mViewPager = (ViewPager) findViewById(R.id.container);
-            mViewPager.setAdapter(mSectionsPagerAdapter);
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-            TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-            tabLayout.setupWithViewPager(mViewPager);
-        }
+        // Set up the ViewPager with the sections adapter.
+        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager.setAdapter(mSectionsPagerAdapter);
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(mViewPager);
     }
 
 
@@ -87,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            if(position == 0) {
+            if (position == 0) {
                 return DealListFragment.newInstance(null);
             } else if (position == 1) {
                 return DealMapFragment.newInstance();
@@ -136,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Snackbar.make(getCurrentFocus(), "Permission Granted, Now you can access location data.", Snackbar.LENGTH_LONG).show();
                 } else {
-                    Snackbar.make(getCurrentFocus(),"Permission Denied, You cannot access location data.",Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(getCurrentFocus(), "Permission Denied, You cannot access location data.", Snackbar.LENGTH_LONG).show();
                 }
                 break;
         }
