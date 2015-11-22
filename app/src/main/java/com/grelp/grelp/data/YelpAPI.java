@@ -41,6 +41,7 @@ public class YelpAPI {
     OAuthService service;
     Token accessToken;
     AsyncHttpClient client;
+    private static YelpAPI instance = null;
 
     /**
      * Setup the Yelp API OAuth credentials.
@@ -59,7 +60,10 @@ public class YelpAPI {
     }
 
     public static YelpAPI getInstance() {
-        return new YelpAPI(CONSUMER_KEY, CONSUMER_SECRET, TOKEN, TOKEN_SECRET);
+        if (instance == null) {
+            instance = new YelpAPI(CONSUMER_KEY, CONSUMER_SECRET, TOKEN, TOKEN_SECRET);
+        }
+        return instance;
     }
 
     /**

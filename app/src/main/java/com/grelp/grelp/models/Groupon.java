@@ -10,7 +10,10 @@ import org.json.JSONObject;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 //TODO: Incorporate deal options into the model
 public class Groupon implements Parcelable {
@@ -22,13 +25,14 @@ public class Groupon implements Parcelable {
     private final String announcementTitle;
     private final String soldQuantity;
     private final String grid4ImageUrl;
-    private final String division;
+    private final GrouponDivision division;
     private final double distance;
     private final double lat;
     private final double lng;
     private final String minPrice;
     private final String minValue;
     private final GrouponDealMerchant merchant;
+    private final List<GrouponOption> options;
 
     public Groupon(Builder builder) {
         this.id = builder.id;
@@ -44,6 +48,7 @@ public class Groupon implements Parcelable {
         this.lat = builder.lat;
         this.lng = builder.lng;
         this.merchant = builder.merchant;
+        this.options = builder.options;
     }
 
     public String getId() {
@@ -70,7 +75,7 @@ public class Groupon implements Parcelable {
         return grid4ImageUrl;
     }
 
-    public String getDivision() {
+    public GrouponDivision getDivision() {
         return division;
     }
 
@@ -98,6 +103,20 @@ public class Groupon implements Parcelable {
         return merchant;
     }
 
+    public List<GrouponOption> getOptions() {
+        return options;
+    }
+
+    public Collection<RedemptionLocation> getUniqueRedemptionLocations() {
+        Set<RedemptionLocation> redemptionLocations = new HashSet<>();
+        if (getOptions() != null && !getOptions().isEmpty()) {
+            for (GrouponOption option : getOptions()) {
+                redemptionLocations.addAll(option.getRedemptionLocations());
+            }
+        }
+        return redemptionLocations;
+    }
+
     public static Groupon fromJSONObject(JSONObject jsonObject) throws JSONException {
         String id = jsonObject.getString("id");
         String uuid = jsonObject.getString("uuid");
@@ -107,7 +126,7 @@ public class Groupon implements Parcelable {
         String grid4ImageUrl = jsonObject.getString("grid4ImageUrl");
 
         JSONObject divisionObject = jsonObject.getJSONObject("division");
-        String division = divisionObject.getString("name");
+        GrouponDivision division = GrouponDivision.fromJSONObject(divisionObject);
 
         JSONArray locations = jsonObject.getJSONArray("locations");
         JSONObject locationObject = locations.length() > 0 ? locations.getJSONObject(0) : null;
@@ -117,8 +136,10 @@ public class Groupon implements Parcelable {
         double min = Double.MAX_VALUE;
         String minp = null, minv = null;
         double lat = 0.0, lng = 0.0;
+        List<GrouponOption> optionList = new ArrayList<>(options.length());
         for (int i = 0; i < options.length(); i++) {
             JSONObject optionObject = options.getJSONObject(i);
+            optionList.add(GrouponOption.fromJsonObject(optionObject));
             JSONObject priceObject = optionObject.getJSONObject("price");
             JSONObject valueObject = optionObject.getJSONObject("value");
             JSONArray redemptionLocations = optionObject.getJSONArray("redemptionLocations");
@@ -138,6 +159,7 @@ public class Groupon implements Parcelable {
                 .withUuid(uuid)
                 .withAnnouncementTitle(announcementTitle)
                 .withTitle(title)
+                .withSoldQuantity(soldQuantity)
                 .withGrid4ImageUrl(grid4ImageUrl)
                 .withDistance(distance)
                 .withDivision(division)
@@ -146,6 +168,7 @@ public class Groupon implements Parcelable {
                 .withMerchant(merchant)
                 .withMinPrice(minp)
                 .withMinValue(minv)
+                .withOptions(optionList)
                 .build();
         return groupon;
     }
@@ -166,13 +189,14 @@ public class Groupon implements Parcelable {
         private String announcementTitle;
         private String soldQuantity;
         private String grid4ImageUrl;
-        private String division;
+        private GrouponDivision division;
         private double distance;
         private double lat;
         private double lng;
         private String minPrice;
         private String minValue;
         private GrouponDealMerchant merchant;
+        private List<GrouponOption> options;
 
         public Groupon build() {
             return new Groupon(this);
@@ -208,7 +232,7 @@ public class Groupon implements Parcelable {
             return this;
         }
 
-        public Builder withDivision(String division) {
+        public Builder withDivision(GrouponDivision division) {
             this.division = division;
             return this;
         }
@@ -242,6 +266,11 @@ public class Groupon implements Parcelable {
             this.merchant = merchant;
             return this;
         }
+
+        public Builder withOptions(List<GrouponOption> options) {
+            this.options = options;
+            return this;
+        }
     }
 
     @Override
@@ -257,13 +286,14 @@ public class Groupon implements Parcelable {
         dest.writeString(this.announcementTitle);
         dest.writeString(this.soldQuantity);
         dest.writeString(this.grid4ImageUrl);
-        dest.writeString(this.division);
+        dest.writeParcelable(this.division, 0);
         dest.writeDouble(this.distance);
         dest.writeDouble(this.lat);
         dest.writeDouble(this.lng);
         dest.writeString(this.minPrice);
         dest.writeString(this.minValue);
         dest.writeParcelable(this.merchant, 0);
+        dest.writeTypedList(this.options);
     }
 
     private Groupon(Parcel in) {
@@ -273,13 +303,14 @@ public class Groupon implements Parcelable {
         this.announcementTitle = in.readString();
         this.soldQuantity = in.readString();
         this.grid4ImageUrl = in.readString();
-        this.division = in.readString();
+        this.division = in.readParcelable(GrouponDivision.class.getClassLoader());
         this.distance = in.readDouble();
         this.lat = in.readDouble();
         this.lng = in.readDouble();
         this.minPrice = in.readString();
         this.minValue = in.readString();
         this.merchant = in.readParcelable(GrouponDealMerchant.class.getClassLoader());
+        this.options = in.createTypedArrayList(GrouponOption.CREATOR);
     }
 
     public static final Creator<Groupon> CREATOR = new Creator<Groupon>() {
