@@ -59,10 +59,16 @@ public class GrouponMerchant {
         if (merchantImages.length() > 0) {
             merchantImageUrl = merchantImages.getJSONObject(0).getString("url");
         }
-
-        JSONObject merchantLocation = merchantObject.getJSONArray("locations").getJSONObject(0);
-        double lat = merchantLocation.getDouble("lat");
-        double lng = merchantLocation.getDouble("lng");
+        double lat = 0;
+        double lng = 0;
+        if (merchantObject.has("locations")) {
+            JSONArray locations = merchantObject.getJSONArray("locations");
+            if ( locations.length() > 0) {
+                JSONObject merchantLocation = locations.getJSONObject(0);
+                lat = merchantLocation.getDouble("lat");
+                lng = merchantLocation.getDouble("lng");
+            }
+        }
         return new GrouponMerchant(id, uuid, name, lat, lng, merchantImageUrl);
     }
 }

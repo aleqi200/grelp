@@ -57,7 +57,7 @@ public class GrouponAdapter extends ArrayAdapter<Groupon> {
         viewHolder.tvTitle.setText(groupon.getTitle());
 
         viewHolder.tvDistance.setText(groupon.getDistance() + "mi");
-        viewHolder.tvDivision.setText(groupon.getDivision());
+        viewHolder.tvDivision.setText(groupon.getDivision().getName());
         viewHolder.tvValue.setText(groupon.getMinValue());
         viewHolder.tvValue.setPaintFlags(viewHolder.tvValue.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         viewHolder.tvPrice.setText(groupon.getMinPrice());

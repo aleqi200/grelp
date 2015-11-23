@@ -14,6 +14,7 @@ import com.grelp.grelp.data.GrouponClient;
 import com.grelp.grelp.data.YelpAPI;
 import com.grelp.grelp.models.Groupon;
 import com.grelp.grelp.models.GrouponMerchant;
+import com.grelp.grelp.models.RedemptionLocation;
 import com.grelp.grelp.models.YelpBusiness;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.squareup.picasso.Picasso;
@@ -21,6 +22,9 @@ import com.squareup.picasso.Picasso;
 import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Collection;
+import java.util.LinkedList;
 
 public class GrouponDetailActivity extends AppCompatActivity {
 
@@ -75,7 +79,25 @@ public class GrouponDetailActivity extends AppCompatActivity {
     }
 
     private void searchForMerchantOnYelp() {
-        YelpAPI.getInstance().searchForBusinesses(merchant.getName(), merchant.getLat(), merchant.getLng(),
+        double lat = merchant.getLat();
+        double lng = merchant.getLng();
+        LinkedList<RedemptionLocation> locations = new LinkedList<>(groupon.getUniqueRedemptionLocations());
+        if (locations.size() > 1) {
+            Log.d("multiple_locations", groupon.getId());
+        }
+        RedemptionLocation firstLocation = locations.getFirst();// only first one for now need to handle multiple locations
+        if (lat == 0 || lng == 0) {
+            lat = firstLocation.getLat(); // get from redemption location first
+            lng = firstLocation.getLng();
+            if (lat == 0 || lng == 0) {
+                lat = groupon.getDivision().getLat(); // resort to division then at last
+                lng = groupon.getDivision().getLng();
+            }
+        }
+        if (lng == 0) {
+
+        }
+        YelpAPI.getInstance().searchForBusinesses(merchant.getName(), lat, lng,
                 new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
