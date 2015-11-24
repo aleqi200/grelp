@@ -1,5 +1,8 @@
 package com.grelp.grelp.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.grelp.grelp.util.PrettyTimePrinter;
 
 import org.json.JSONArray;
@@ -9,7 +12,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class YelpReview {
+public class YelpReview implements Parcelable {
     private final double rating;
     private final String excerpt;
     private final String timeCreated;
@@ -63,4 +66,36 @@ public class YelpReview {
         }
         return reviews;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeDouble(this.rating);
+        dest.writeString(this.excerpt);
+        dest.writeString(this.timeCreated);
+        dest.writeString(this.ratingImageUrl);
+        dest.writeParcelable(this.user, flags);
+    }
+
+    protected YelpReview(Parcel in) {
+        this.rating = in.readDouble();
+        this.excerpt = in.readString();
+        this.timeCreated = in.readString();
+        this.ratingImageUrl = in.readString();
+        this.user = in.readParcelable(YelpUser.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<YelpReview> CREATOR = new Parcelable.Creator<YelpReview>() {
+        public YelpReview createFromParcel(Parcel source) {
+            return new YelpReview(source);
+        }
+
+        public YelpReview[] newArray(int size) {
+            return new YelpReview[size];
+        }
+    };
 }

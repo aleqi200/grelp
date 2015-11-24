@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/yelp_gradient"
+            android:id="@+id/relativeLayout">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imgVYelpLogo"
+                android:src="@mipmap/ic_yelp_logo"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:paddingLeft="6dp"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Business Name"
+                android:id="@+id/tvBusinessName"
+                android:textColor="#FFFFFF"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:paddingLeft="1dp"
+                android:paddingStart="1dp"
+                android:paddingEnd="1dp"
+                />
+        </RelativeLayout>
+
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@mipmap/ic_launcher"
+            android:id="@+id/imgVBusinessImg"
+            android:scaleType="fitXY"
+            android:layout_below="@+id/relativeLayout" />
+
+        <ImageView
+            android:layout_width="140dp"
+            android:layout_height="30dp"
+            android:scaleType="fitXY"
+            android:id="@+id/imgYelpRating"
+            android:layout_below="@+id/relativeLayout"
+            android:layout_toRightOf="@+id/imgVBusinessImg"
+            android:src="@mipmap/ic_rating"
+            android:padding="2dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="140 reviews"
+            android:id="@+id/tvNumberOfReviews"
+            android:layout_below="@+id/relativeLayout"
+            android:layout_toEndOf="@+id/imgYelpRating"
+            android:layout_toRightOf="@+id/imgYelpRating"
+            android:paddingTop="4dp"
+            android:padding="2dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Category"
+            android:id="@+id/tvCategory"
+            android:layout_below="@+id/imgYelpRating"
+            android:layout_toRightOf="@+id/imgVBusinessImg"
+            android:layout_toEndOf="@+id/imgVBusinessImg"
+            android:padding="2dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/more_reviews"
+            android:padding="2dp"
+            android:id="@+id/tvMoreReviews"
+            android:layout_below="@+id/imgVBusinessImg"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+    </RelativeLayout>
+</LinearLayout>

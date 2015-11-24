@@ -9,4 +9,6 @@
     <color name="secondary_text">#727272</color>
     <color name="icons">#FFFFFF</color>
     <color name="divider">#B6B6B6</color>
+    <color name="yelp_primary">#c41200</color>
+    <color name="yelp_secondary">#af0606</color>
 </resources>
