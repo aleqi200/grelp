@@ -2,6 +2,8 @@ package com.grelp.grelp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -126,10 +128,11 @@ public class GrouponDetailActivity extends AppCompatActivity {
                     tvDetailedTitle.setText(groupon.getTitle());
 
                     Picasso.with(GrouponDetailActivity.this).load(groupon.getGrid4ImageUrl()).into(ivDetailedImage);
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.yelp_fragment, YelpDetailFragment.newInstance(business))
-                            .commit();
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    FragmentTransaction transaction = fragmentManager.beginTransaction();
+                    transaction.setCustomAnimations(R.anim.animation_fade_in, R.anim.animation_fade_out);
+                    transaction.replace(R.id.yelp_fragment, YelpDetailFragment.newInstance(business));
+                    transaction.commit();
 
                 } catch (JSONException e) {
                     Log.e(LOG_TAG, "Error while parsing json object: " + response, e);

@@ -51,13 +51,15 @@
             android:layout_below="@+id/relativeLayout" />
 
         <ImageView
-            android:layout_width="140dp"
-            android:layout_height="30dp"
+            android:layout_width="120dp"
+            android:layout_height="25dp"
             android:scaleType="fitXY"
             android:id="@+id/imgYelpRating"
             android:layout_below="@+id/relativeLayout"
             android:layout_toRightOf="@+id/imgVBusinessImg"
+            android:background="?android:attr/selectableItemBackground"
             android:src="@mipmap/ic_rating"
+            android:elevation="2dp"
             android:padding="2dp" />
 
         <TextView
@@ -65,10 +67,12 @@
             android:layout_height="wrap_content"
             android:text="140 reviews"
             android:id="@+id/tvNumberOfReviews"
+            android:background="?android:attr/selectableItemBackground"
             android:layout_below="@+id/relativeLayout"
             android:layout_toEndOf="@+id/imgYelpRating"
             android:layout_toRightOf="@+id/imgYelpRating"
             android:paddingTop="4dp"
+            android:elevation="2dp"
             android:padding="2dp" />
 
         <TextView
@@ -89,6 +93,8 @@
             android:id="@+id/tvMoreReviews"
             android:layout_below="@+id/imgVBusinessImg"
             android:layout_alignParentRight="true"
+            android:background="?android:attr/selectableItemBackground"
+            android:elevation="2dp"
             android:layout_alignParentEnd="true" />
 
     </RelativeLayout>

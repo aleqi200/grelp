@@ -7,6 +7,7 @@
     tools:showIn="@layout/activity_groupon_detail"
     tools:context=".activities.GrouponDetailActivity">
 
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="200dp"
@@ -35,7 +36,7 @@
 
 
 <FrameLayout
-    android:layout_below="@+id/ivDetailedImage"
+    android:layout_below="@+id/tvDetailedTitle"
     android:id="@+id/yelp_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"/>

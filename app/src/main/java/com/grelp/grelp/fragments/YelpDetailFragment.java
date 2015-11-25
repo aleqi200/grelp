@@ -3,7 +3,6 @@ package com.grelp.grelp.fragments;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +28,7 @@ public class YelpDetailFragment extends Fragment {
     private TextView businessTitle;
     private TextView moreReviews;
 
-    YelpBusiness yelp;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -42,13 +41,13 @@ public class YelpDetailFragment extends Fragment {
         businessTitle = (TextView) view.findViewById(R.id.tvBusinessName);
         category = (TextView) view.findViewById(R.id.tvCategory);
         moreReviews = (TextView) view.findViewById(R.id.tvMoreReviews);
-        yelp = getArguments().getParcelable("yelp");
+        final YelpBusiness yelp = getArguments().getParcelable("yelp");
         if (yelp != null) {
             View.OnClickListener openReviewListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent yelpIntent = new Intent(getContext(), YelpActivity.class);
-                    yelpIntent.putExtra("yelp", YelpDetailFragment.this.yelp);
+                    yelpIntent.putExtra("yelp", yelp);
                     startActivity(yelpIntent);
                 }
             };
