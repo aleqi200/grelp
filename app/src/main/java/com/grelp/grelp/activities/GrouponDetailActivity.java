@@ -2,6 +2,8 @@ package com.grelp.grelp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -12,6 +14,7 @@ import android.widget.TextView;
 import com.grelp.grelp.R;
 import com.grelp.grelp.data.GrouponClient;
 import com.grelp.grelp.data.YelpAPI;
+import com.grelp.grelp.fragments.YelpDetailFragment;
 import com.grelp.grelp.models.Groupon;
 import com.grelp.grelp.models.GrouponMerchant;
 import com.grelp.grelp.models.RedemptionLocation;
@@ -33,31 +36,29 @@ public class GrouponDetailActivity extends AppCompatActivity {
     private Groupon groupon;
     private GrouponMerchant merchant;
     private ImageView ivDetailedImage;
-    private ImageView ivYelpBizImage;
     private TextView tvDetailedTitle;
-    private TextView tvYelpBizTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groupon_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        groupon = getIntent().getParcelableExtra("groupon");
+        toolbar.setTitle(groupon.getShortAnnouncementTitle());
+        toolbar.setLogo(R.mipmap.ic_launcher);
         setSupportActionBar(toolbar);
         grouponClient = GrouponClient.getInstance();
-
         setupViews();
         getGrouponMerchant();
     }
 
     private void setupViews() {
         ivDetailedImage = (ImageView) findViewById(R.id.ivDetailedImage);
-        ivYelpBizImage = (ImageView) findViewById(R.id.ivYelpBizImage);
         tvDetailedTitle = (TextView) findViewById(R.id.tvDetailedTitle);
-        tvYelpBizTitle = (TextView) findViewById(R.id.tvYelpBizTitle);
     }
 
     private void getGrouponMerchant() {
-        groupon = getIntent().getParcelableExtra("groupon");
+
         grouponClient.getMerchant(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -125,9 +126,13 @@ public class GrouponDetailActivity extends AppCompatActivity {
                 try {
                     YelpBusiness business = YelpBusiness.fromJSONObject(response);
                     tvDetailedTitle.setText(groupon.getTitle());
-                    tvYelpBizTitle.setText(business.getName());
+
                     Picasso.with(GrouponDetailActivity.this).load(groupon.getGrid4ImageUrl()).into(ivDetailedImage);
-                    Picasso.with(GrouponDetailActivity.this).load(business.getImageUrl()).into(ivYelpBizImage);
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    FragmentTransaction transaction = fragmentManager.beginTransaction();
+                    transaction.setCustomAnimations(R.anim.animation_fade_in, R.anim.animation_fade_out);
+                    transaction.replace(R.id.yelp_fragment, YelpDetailFragment.newInstance(business));
+                    transaction.commit();
 
                 } catch (JSONException e) {
                     Log.e(LOG_TAG, "Error while parsing json object: " + response, e);
@@ -140,10 +145,4 @@ public class GrouponDetailActivity extends AppCompatActivity {
             }
         });
     }
-
-    public void onClickYelpSection(View view) {
-        Intent yelpIntent = new Intent(this, YelpActivity.class);
-        startActivity(yelpIntent);
-    }
-
 }

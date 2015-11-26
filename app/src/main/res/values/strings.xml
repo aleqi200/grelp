@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Grelp</string>
     <string name="title_activity_yelp">YelpActivity</string>
-    <string name="title_activity_groupon_detail">GrouponDetailActivity</string>
+    <string name="title_activity_groupon_detail"> </string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
@@ -11,4 +11,10 @@
     <string name="title_activity_main">Grelp</string>
     <string name="section_format">Map goes here</string>
     <string name="title_activity_map">MapActivity</string>
+    <string name="more_reviews"><![CDATA[more reviews >>]]></string>
+    <plurals name="number_of_reviews">
+        <item quantity="zero">No reviews</item>
+        <item quantity="one">%d review</item>
+        <item quantity="other">%d reviews</item>
+    </plurals>
 </resources>

@@ -23,6 +23,7 @@ public class Groupon implements Parcelable {
     private final String uuid;
     private final String title;
     private final String announcementTitle;
+    private final String shortAnnouncementTitle;
     private final String soldQuantity;
     private final String grid4ImageUrl;
     private final GrouponDivision division;
@@ -39,6 +40,7 @@ public class Groupon implements Parcelable {
         this.uuid = builder.uuid;
         this.title = builder.title;
         this.announcementTitle = builder.announcementTitle;
+        this.shortAnnouncementTitle = builder.shortAnnouncementTitle;
         this.soldQuantity = builder.soldQuantity;
         this.grid4ImageUrl = builder.grid4ImageUrl;
         this.distance = builder.distance;
@@ -65,6 +67,10 @@ public class Groupon implements Parcelable {
 
     public String getAnnouncementTitle() {
         return announcementTitle;
+    }
+
+    public String getShortAnnouncementTitle() {
+        return shortAnnouncementTitle;
     }
 
     public String getSoldQuantity() {
@@ -122,6 +128,7 @@ public class Groupon implements Parcelable {
         String uuid = jsonObject.getString("uuid");
         String title = jsonObject.getString("title");
         String announcementTitle = jsonObject.getString("announcementTitle");
+        String shortAnnouncementTitle = jsonObject.getString("shortAnnouncementTitle");
         String soldQuantity = jsonObject.getString("soldQuantityMessage");
         String grid4ImageUrl = jsonObject.getString("grid4ImageUrl");
 
@@ -158,6 +165,7 @@ public class Groupon implements Parcelable {
                 .withId(id)
                 .withUuid(uuid)
                 .withAnnouncementTitle(announcementTitle)
+                .withShortAnnouncementTitle(shortAnnouncementTitle)
                 .withTitle(title)
                 .withSoldQuantity(soldQuantity)
                 .withGrid4ImageUrl(grid4ImageUrl)
@@ -187,6 +195,7 @@ public class Groupon implements Parcelable {
         private String uuid;
         private String title;
         private String announcementTitle;
+        private String shortAnnouncementTitle;
         private String soldQuantity;
         private String grid4ImageUrl;
         private GrouponDivision division;
@@ -271,6 +280,11 @@ public class Groupon implements Parcelable {
             this.options = options;
             return this;
         }
+
+        public Builder withShortAnnouncementTitle(String shortAnnouncementTitle) {
+            this.shortAnnouncementTitle = shortAnnouncementTitle;
+            return this;
+        }
     }
 
     @Override
@@ -284,6 +298,7 @@ public class Groupon implements Parcelable {
         dest.writeString(this.uuid);
         dest.writeString(this.title);
         dest.writeString(this.announcementTitle);
+        dest.writeString(this.shortAnnouncementTitle);
         dest.writeString(this.soldQuantity);
         dest.writeString(this.grid4ImageUrl);
         dest.writeParcelable(this.division, 0);
@@ -301,6 +316,7 @@ public class Groupon implements Parcelable {
         this.uuid = in.readString();
         this.title = in.readString();
         this.announcementTitle = in.readString();
+        this.shortAnnouncementTitle = in.readString();
         this.soldQuantity = in.readString();
         this.grid4ImageUrl = in.readString();
         this.division = in.readParcelable(GrouponDivision.class.getClassLoader());
