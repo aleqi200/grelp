@@ -85,17 +85,23 @@
             android:layout_toEndOf="@+id/imgVBusinessImg"
             android:padding="2dp" />
 
+        <FrameLayout
+            android:id="@+id/yelpReviewsHolder"
+            android:layout_below="@id/imgVBusinessImg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <include layout="@layout/item_yelp_review"/>
+        </FrameLayout>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/more_reviews"
-            android:padding="2dp"
-            android:id="@+id/tvMoreReviews"
-            android:layout_below="@+id/imgVBusinessImg"
-            android:layout_alignParentRight="true"
-            android:background="?android:attr/selectableItemBackground"
-            android:elevation="2dp"
-            android:layout_alignParentEnd="true" />
-
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:phoneNumber="true"
+            android:text="+1555555555"
+            android:id="@+id/tvPhoneNumber"
+            android:layout_below="@+id/tvCategory"
+            android:layout_toRightOf="@+id/imgVBusinessImg"
+            android:layout_toEndOf="@+id/imgVBusinessImg" />
     </RelativeLayout>
 </LinearLayout>
