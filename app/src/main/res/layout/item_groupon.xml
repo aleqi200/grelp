@@ -75,7 +75,7 @@
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/tvDivision"
             android:layout_alignStart="@+id/tvDivision"
-            android:layout_below="@+id/tvValue"
+            android:layout_below="@+id/tvOptionPrice"
             android:text="Small Text"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textSize="10sp" />
@@ -95,7 +95,7 @@
             android:textSize="12sp" />
 
         <TextView
-            android:id="@+id/tvValue"
+            android:id="@+id/tvOptionPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"

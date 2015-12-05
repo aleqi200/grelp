@@ -21,9 +21,6 @@ import com.grelp.grelp.models.YelpReview;
 import com.grelp.grelp.util.StringUtil;
 import com.squareup.picasso.Picasso;
 
-/**
- * Created by acampelo on 11/23/15.
- */
 public class YelpDetailFragment extends Fragment {
 
     private ImageView businessImg;

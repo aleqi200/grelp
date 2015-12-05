@@ -6,9 +6,6 @@ import android.os.Parcelable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * Created by acampelo on 11/21/15.
- */
 public class GrouponDivision implements Parcelable {
     private String id;
     private String name;
