@@ -8,9 +8,6 @@ import org.json.JSONObject;
 
 import java.util.UUID;
 
-/**
- * Created by acampelo on 11/21/15.
- */
 public class RedemptionLocation implements Parcelable {
     private UUID id;
     private Double lat;

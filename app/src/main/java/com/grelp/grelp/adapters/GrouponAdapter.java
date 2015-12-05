@@ -46,7 +46,7 @@ public class GrouponAdapter extends ArrayAdapter<Groupon> {
             viewHolder.tvDivision = (TextView) convertView.findViewById(R.id.tvDivision);
             viewHolder.tvSoldQuantity = (TextView) convertView.findViewById(R.id.tvSoldMessage);
             viewHolder.tvPrice = (TextView) convertView.findViewById(R.id.tvPrice);
-            viewHolder.tvValue = (TextView) convertView.findViewById(R.id.tvValue);
+            viewHolder.tvValue = (TextView) convertView.findViewById(R.id.tvOptionPrice);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (GrouponViewHolder) convertView.getTag();

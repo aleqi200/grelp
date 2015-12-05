@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-//TODO: Incorporate deal options into the model
 public class Groupon implements Parcelable {
     private final static NumberFormat formatter = new DecimalFormat("#0.0");
 

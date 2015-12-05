@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -39,7 +38,7 @@ public class GrouponViewHolder extends RecyclerView.ViewHolder implements View.O
         tvDivision = (TextView) view.findViewById(R.id.tvDivision);
         tvSoldQuantity = (TextView) view.findViewById(R.id.tvSoldMessage);
         tvPrice = (TextView) view.findViewById(R.id.tvPrice);
-        tvValue = (TextView) view.findViewById(R.id.tvValue);
+        tvValue = (TextView) view.findViewById(R.id.tvOptionPrice);
     }
 
     public void bind(Groupon groupon) {

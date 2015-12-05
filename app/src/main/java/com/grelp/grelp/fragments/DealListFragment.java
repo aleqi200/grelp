@@ -1,7 +1,6 @@
 package com.grelp.grelp.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -13,16 +12,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.grelp.grelp.R;
-import com.grelp.grelp.activities.GrouponDetailActivity;
-import com.grelp.grelp.adapters.GrouponAdapter;
 import com.grelp.grelp.adapters.GrouponArrayAdapter;
 import com.grelp.grelp.listeners.EndlessRecyclerOnScrollListener;
-import com.grelp.grelp.listeners.InfiniteScrollListener;
 import com.grelp.grelp.models.Groupon;
 import com.grelp.grelp.data.GrouponClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -31,8 +25,6 @@ import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.LinkedList;
 
 
 public class DealListFragment extends Fragment {

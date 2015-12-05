@@ -11,19 +11,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * Created by acampelo on 11/21/15.
- */
 public class GrouponOption implements Parcelable {
     private UUID id;
     private String title;
     private String price;
+    private String value;
+    private String discountPercent;
+    private String soldQuantityMessage;
     private List<RedemptionLocation> redemptionLocations;
 
     public GrouponOption(Builder builder) {
         this.id = builder.id;
         this.title = builder.title;
         this.price = builder.price;
+        this.value = builder.value;
+        this.discountPercent = builder.discountPercent;
+        this.soldQuantityMessage = builder.soldQuantityMessage;
         this.redemptionLocations = builder.redemptionLocations;
     }
 
@@ -43,11 +46,26 @@ public class GrouponOption implements Parcelable {
         return redemptionLocations;
     }
 
+    public String getValue() {
+        return value;
+    }
+
+    public String getDiscountPercent() {
+        return "Discount " + discountPercent + "%";
+    }
+
+    public String getSoldQuantityMessage() {
+        return "Bought " + soldQuantityMessage;
+    }
+
     public static class Builder {
 
         private UUID id;
         private String title;
         private String price;
+        private String value;
+        private String discountPercent;
+        private String soldQuantityMessage;
         private List<RedemptionLocation> redemptionLocations;
 
         public Builder setId(UUID id) {
@@ -70,6 +88,21 @@ public class GrouponOption implements Parcelable {
             return this;
         }
 
+        public Builder setValue(String value) {
+            this.value = value;
+            return this;
+        }
+
+        public Builder setSoldQuantityMessage(String soldQuantityMessage) {
+            this.soldQuantityMessage = soldQuantityMessage;
+            return this;
+        }
+
+        public Builder setDiscountPercent(String discountPercent) {
+            this.discountPercent = discountPercent;
+            return this;
+        }
+
         public GrouponOption build() {
             return new GrouponOption(this);
         }
@@ -79,8 +112,11 @@ public class GrouponOption implements Parcelable {
     public static GrouponOption fromJsonObject(JSONObject jsonObject) throws JSONException {
         Builder builder = new Builder()
                 .setId(UUID.fromString(jsonObject.getString("uuid")))
-                .setTitle(jsonObject.getString("title"));
+                .setTitle(jsonObject.getString("title"))
+                .setSoldQuantityMessage(jsonObject.getString("soldQuantityMessage"))
+                .setDiscountPercent(jsonObject.getString("discountPercent"));
         builder.setPrice(jsonObject.getJSONObject("price").getString("formattedAmount"));
+        builder.setValue(jsonObject.getJSONObject("value").getString("formattedAmount"));
         JSONArray redemptionLocations = jsonObject.getJSONArray("redemptionLocations");
         List<RedemptionLocation> locationList = new ArrayList<>();
         for (int i = 0; i < redemptionLocations.length(); i++) {
@@ -90,6 +126,7 @@ public class GrouponOption implements Parcelable {
         builder.setRedemptionLocations(locationList);
         return builder.build();
     }
+
 
     @Override
     public int describeContents() {
@@ -101,17 +138,23 @@ public class GrouponOption implements Parcelable {
         dest.writeSerializable(this.id);
         dest.writeString(this.title);
         dest.writeString(this.price);
+        dest.writeString(this.value);
+        dest.writeString(this.discountPercent);
+        dest.writeString(this.soldQuantityMessage);
         dest.writeTypedList(redemptionLocations);
     }
 
-    protected GrouponOption(Parcel in) {
+    private GrouponOption(Parcel in) {
         this.id = (UUID) in.readSerializable();
         this.title = in.readString();
         this.price = in.readString();
+        this.value = in.readString();
+        this.discountPercent = in.readString();
+        this.soldQuantityMessage = in.readString();
         this.redemptionLocations = in.createTypedArrayList(RedemptionLocation.CREATOR);
     }
 
-    public static final Parcelable.Creator<GrouponOption> CREATOR = new Parcelable.Creator<GrouponOption>() {
+    public static final Creator<GrouponOption> CREATOR = new Creator<GrouponOption>() {
         public GrouponOption createFromParcel(Parcel source) {
             return new GrouponOption(source);
         }

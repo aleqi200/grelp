@@ -1,5 +1,6 @@
 package com.grelp.grelp.activities;
 
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -7,7 +8,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.Pair;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.location.places.Place;
@@ -20,6 +24,7 @@ import com.grelp.grelp.fragments.YelpDetailFragment;
 import com.grelp.grelp.models.FourSquareVenue;
 import com.grelp.grelp.models.Groupon;
 import com.grelp.grelp.models.GrouponMerchant;
+import com.grelp.grelp.models.GrouponOption;
 import com.grelp.grelp.models.RedemptionLocation;
 import com.grelp.grelp.models.YelpBusiness;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -37,12 +42,15 @@ public class GrouponDetailActivity extends AppCompatActivity {
     private static final String LOG_TAG = "GrouponDetail";
     private GrouponClient grouponClient;
     private FourSquareClient fourSquareClient;
+    private GooglePlacesAPI googlePlacesAPI;
+
     private Groupon groupon;
     private GrouponMerchant merchant;
     private FourSquareVenue fourSquareVenue;
+
     private ImageView ivDetailedImage;
     private TextView tvDetailedTitle;
-    private GooglePlacesAPI googlePlacesAPI;
+    private LinearLayout llDealOptions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +71,7 @@ public class GrouponDetailActivity extends AppCompatActivity {
     private void setupViews() {
         ivDetailedImage = (ImageView) findViewById(R.id.ivDetailedImage);
         tvDetailedTitle = (TextView) findViewById(R.id.tvDetailedTitle);
+        llDealOptions = (LinearLayout) findViewById(R.id.llDealOptions);
     }
 
     private void getGrouponMerchant() {
@@ -92,7 +101,7 @@ public class GrouponDetailActivity extends AppCompatActivity {
 
             @Override
             public void foundPlace(Place place) {
-                if(place != null) {
+                if (place != null) {
                     Log.d("GOOGLE_PLACES_API", "Got place: " + place.getName());
                 } else {
                     Log.d("GOOGLE_PLACES_API", "Failed to find place via google: " + merchant.getName());
@@ -111,7 +120,11 @@ public class GrouponDetailActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                         try {
-                            JSONObject businessObject = response.getJSONArray("businesses").getJSONObject(0);
+                            JSONArray businesses = response.getJSONArray("businesses");
+                            if (businesses.length() == 0) {
+                                return;
+                            }
+                            JSONObject businessObject = businesses.getJSONObject(0);
                             String businessId = businessObject.getString("id");
                             getYelpReviews(businessId);
                             getFourSquareVenue();
@@ -137,6 +150,17 @@ public class GrouponDetailActivity extends AppCompatActivity {
                     tvDetailedTitle.setText(groupon.getTitle());
 
                     Picasso.with(GrouponDetailActivity.this).load(groupon.getGrid4ImageUrl()).into(ivDetailedImage);
+                    for (GrouponOption option : groupon.getOptions()) {
+                        View childView = LayoutInflater.from(getBaseContext()).inflate(R.layout.item_groupon_option, null);
+                        ((TextView) childView.findViewById(R.id.tvOptionTitle)).setText(option.getTitle());
+                        ((TextView) childView.findViewById(R.id.tvBoughtQuantity)).setText(option.getSoldQuantityMessage());
+                        ((TextView) childView.findViewById(R.id.tvOptionDiscount)).setText(option.getDiscountPercent());
+                        ((TextView) childView.findViewById(R.id.tvOptionPrice)).setText(option.getPrice());
+                        TextView tvOptionValue = (TextView) childView.findViewById(R.id.tvOptionValue);
+                        tvOptionValue.setText(option.getValue());
+                        tvOptionValue.setPaintFlags(tvOptionValue.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                        llDealOptions.addView(childView);
+                    }
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     FragmentTransaction transaction = fragmentManager.beginTransaction();
                     transaction.setCustomAnimations(R.anim.animation_fade_in, R.anim.animation_fade_out);
@@ -165,6 +189,9 @@ public class GrouponDetailActivity extends AppCompatActivity {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
                     JSONArray venues = response.getJSONObject("response").getJSONArray("venues");
+                    if (venues.length() == 0) {
+                        return;
+                    }
                     JSONObject venue = venues.getJSONObject(0);
                     fourSquareClient.searchForVenueById(venue.getString("id"), new JsonHttpResponseHandler() {
                         @Override
