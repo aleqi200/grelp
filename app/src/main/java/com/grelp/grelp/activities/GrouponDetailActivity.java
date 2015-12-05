@@ -1,6 +1,8 @@
 package com.grelp.grelp.activities;
 
+import android.content.Intent;
 import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -51,6 +53,7 @@ public class GrouponDetailActivity extends AppCompatActivity {
     private ImageView ivDetailedImage;
     private TextView tvDetailedTitle;
     private LinearLayout llDealOptions;
+    private ImageView btnBuy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +75,30 @@ public class GrouponDetailActivity extends AppCompatActivity {
         ivDetailedImage = (ImageView) findViewById(R.id.ivDetailedImage);
         tvDetailedTitle = (TextView) findViewById(R.id.tvDetailedTitle);
         llDealOptions = (LinearLayout) findViewById(R.id.llDealOptions);
+        btnBuy = (ImageView) findViewById(R.id.btnBuy);
+
+        //Setup groupon detailed view
+        tvDetailedTitle.setText(groupon.getTitle());
+        Picasso.with(GrouponDetailActivity.this).load(groupon.getGrid4ImageUrl()).into(ivDetailedImage);
+        for (GrouponOption option : groupon.getOptions()) {
+            View childView = LayoutInflater.from(getBaseContext()).inflate(R.layout.item_groupon_option, null);
+            ((TextView) childView.findViewById(R.id.tvOptionTitle)).setText(option.getTitle());
+            ((TextView) childView.findViewById(R.id.tvBoughtQuantity)).setText(option.getSoldQuantityMessage());
+            ((TextView) childView.findViewById(R.id.tvOptionDiscount)).setText(option.getDiscountPercent());
+            ((TextView) childView.findViewById(R.id.tvOptionPrice)).setText(option.getPrice());
+            TextView tvOptionValue = (TextView) childView.findViewById(R.id.tvOptionValue);
+            tvOptionValue.setText(option.getValue());
+            tvOptionValue.setPaintFlags(tvOptionValue.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            llDealOptions.addView(childView);
+        }
+
+        btnBuy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String uriString = "groupon:///dispatch/us/deal/" + groupon.getId();
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(uriString)));
+            }
+        });
     }
 
     private void getGrouponMerchant() {
@@ -147,20 +174,6 @@ public class GrouponDetailActivity extends AppCompatActivity {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
                     YelpBusiness business = YelpBusiness.fromJSONObject(response);
-                    tvDetailedTitle.setText(groupon.getTitle());
-
-                    Picasso.with(GrouponDetailActivity.this).load(groupon.getGrid4ImageUrl()).into(ivDetailedImage);
-                    for (GrouponOption option : groupon.getOptions()) {
-                        View childView = LayoutInflater.from(getBaseContext()).inflate(R.layout.item_groupon_option, null);
-                        ((TextView) childView.findViewById(R.id.tvOptionTitle)).setText(option.getTitle());
-                        ((TextView) childView.findViewById(R.id.tvBoughtQuantity)).setText(option.getSoldQuantityMessage());
-                        ((TextView) childView.findViewById(R.id.tvOptionDiscount)).setText(option.getDiscountPercent());
-                        ((TextView) childView.findViewById(R.id.tvOptionPrice)).setText(option.getPrice());
-                        TextView tvOptionValue = (TextView) childView.findViewById(R.id.tvOptionValue);
-                        tvOptionValue.setText(option.getValue());
-                        tvOptionValue.setPaintFlags(tvOptionValue.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                        llDealOptions.addView(childView);
-                    }
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     FragmentTransaction transaction = fragmentManager.beginTransaction();
                     transaction.setCustomAnimations(R.anim.animation_fade_in, R.anim.animation_fade_out);
