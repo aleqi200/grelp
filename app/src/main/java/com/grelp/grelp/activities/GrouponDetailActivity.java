@@ -22,6 +22,7 @@ import com.grelp.grelp.data.GooglePlacesAPI;
 import com.grelp.grelp.data.FourSquareClient;
 import com.grelp.grelp.data.GrouponClient;
 import com.grelp.grelp.data.YelpAPI;
+import com.grelp.grelp.fragments.FourSquareDetailFragment;
 import com.grelp.grelp.fragments.YelpDetailFragment;
 import com.grelp.grelp.models.FourSquareVenue;
 import com.grelp.grelp.models.Groupon;
@@ -205,13 +206,18 @@ public class GrouponDetailActivity extends AppCompatActivity {
                     if (venues.length() == 0) {
                         return;
                     }
-                    JSONObject venue = venues.getJSONObject(0);
+                    final JSONObject venue = venues.getJSONObject(0);
                     fourSquareClient.searchForVenueById(venue.getString("id"), new JsonHttpResponseHandler() {
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                             try {
-                                fourSquareVenue =
-                                        FourSquareVenue.fromJSONObject(response.getJSONObject("response").getJSONObject("venue"));
+                                fourSquareVenue = FourSquareVenue.fromJSONObject(
+                                        response.getJSONObject("response").getJSONObject("venue"));
+                                FragmentManager fragmentManager = getSupportFragmentManager();
+                                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                                transaction.setCustomAnimations(R.anim.animation_fade_in, R.anim.animation_fade_out);
+                                transaction.replace(R.id.fs_fragment, FourSquareDetailFragment.newInstance(fourSquareVenue));
+                                transaction.commit();
                             } catch (JSONException e) {
                                 Log.e(LOG_TAG, "Error while parsing json object:" + response, e);
                             }
