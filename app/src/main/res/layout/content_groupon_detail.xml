@@ -45,11 +45,20 @@
                 android:id="@+id/llDealOptions"
                 android:orientation="vertical"
                 android:layout_marginTop="10dp"
+                android:layout_marginBottom="3dip"
                 android:layout_below="@+id/tvDetailedTitle">
             </LinearLayout>
 
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_buy"
+                android:id="@+id/btnBuy"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/llDealOptions" />
+
             <FrameLayout
-                android:layout_below="@+id/llDealOptions"
+                android:layout_below="@+id/btnBuy"
                 android:id="@+id/yelp_fragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
