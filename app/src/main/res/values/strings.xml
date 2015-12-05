@@ -14,6 +14,8 @@
     <string name="more_reviews"><![CDATA[more reviews >>]]></string>
     <string name="show_deals">Show Deals</string>
     <string name="show_map">Show Map</string>
+    <string name="fs_title">Four Square</string>
+    <string name="fs_tip_message">What you need to know</string>
     <plurals name="number_of_reviews">
         <item quantity="zero">No reviews</item>
         <item quantity="one">%d review</item>

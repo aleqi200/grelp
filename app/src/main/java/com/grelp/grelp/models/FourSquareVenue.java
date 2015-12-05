@@ -16,16 +16,18 @@ public class FourSquareVenue implements Parcelable {
     private String fourSquareUrl;
     private int likes;
     private int rating;
+    private int ratingCount;
     private List<FourSquareTip> tips;
 
     public FourSquareVenue(String id, String name, String fourSquareUrl, int likes, int rating,
-                           List<FourSquareTip> tips) {
+                           int ratingCount, List<FourSquareTip> tips) {
         this.id = id;
         this.name = name;
         this.fourSquareUrl = fourSquareUrl;
         this.likes = likes;
         this.rating = rating;
         this.tips = tips;
+        this.ratingCount = ratingCount;
     }
 
     public String getId() {
@@ -60,8 +62,12 @@ public class FourSquareVenue implements Parcelable {
         this.likes = likes;
     }
 
-    public int getRating() {
-        return rating;
+    public String getRating() {
+        return rating + "";
+    }
+
+    public String getRatingCount() {
+        return "Based on " + ratingCount + " ratings";
     }
 
     public void setRating(int rating) {
@@ -81,6 +87,7 @@ public class FourSquareVenue implements Parcelable {
         String name = venue.getString("name");
         String fourSquareUrl = venue.getString("canonicalUrl");
         int rating = venue.getInt("rating");
+        int ratingCount = venue.getInt("ratingSignals");
         int likes = venue.getJSONObject("likes").getInt("count");
         List<FourSquareTip> tips = FourSquareTip.fromJSONObject(venue.getJSONObject("tips"));
         JSONArray phraseArray = venue.getJSONArray("phrases");
@@ -90,7 +97,7 @@ public class FourSquareVenue implements Parcelable {
             phrases.add(phraseObject.getString("phrase"));
         }
         FourSquareVenue fourSquareVenue = new FourSquareVenue(id, name, fourSquareUrl,
-                likes, rating, tips);
+                likes, rating, ratingCount, tips);
         return fourSquareVenue;
     }
 
@@ -107,6 +114,7 @@ public class FourSquareVenue implements Parcelable {
         dest.writeString(this.fourSquareUrl);
         dest.writeInt(this.likes);
         dest.writeInt(this.rating);
+        dest.writeInt(this.ratingCount);
         dest.writeTypedList(tips);
     }
 
@@ -116,6 +124,7 @@ public class FourSquareVenue implements Parcelable {
         this.fourSquareUrl = in.readString();
         this.likes = in.readInt();
         this.rating = in.readInt();
+        this.ratingCount = in.readInt();
         in.readTypedList(tips, FourSquareTip.CREATOR);
     }
 
