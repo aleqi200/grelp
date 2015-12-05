@@ -35,4 +35,7 @@ dependencies {
     compile 'com.android.support:design:23.1.1'
     compile 'com.google.android.gms:play-services:8.3.0'
     compile 'com.google.android.gms:play-services-location:8.3.0'
+
+    //Foursquare API
+    compile 'com.foursquare:foursquare-android-oauth:1.0.3'
 }
