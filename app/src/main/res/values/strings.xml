@@ -12,6 +12,8 @@
     <string name="section_format">Map goes here</string>
     <string name="title_activity_map">MapActivity</string>
     <string name="more_reviews"><![CDATA[more reviews >>]]></string>
+    <string name="show_deals">Show Deals</string>
+    <string name="show_map">Show Map</string>
     <plurals name="number_of_reviews">
         <item quantity="zero">No reviews</item>
         <item quantity="one">%d review</item>

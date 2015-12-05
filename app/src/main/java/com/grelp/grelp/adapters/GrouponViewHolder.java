@@ -32,8 +32,8 @@ public class GrouponViewHolder extends RecyclerView.ViewHolder implements View.O
     public GrouponViewHolder(View view) {
         super(view);
         this.context = view.getContext();
-        ivDealImage = (ImageView) view.findViewById(R.id.ivDealImage);
-        tvTitle = (TextView) view.findViewById(R.id.tvTitle);
+        ivDealImage = (ImageView) view.findViewById(R.id.ivMapDealImage);
+        tvTitle = (TextView) view.findViewById(R.id.tvMapDealTitle);
         tvDistance = (TextView) view.findViewById(R.id.tvDistance);
         tvDivision = (TextView) view.findViewById(R.id.tvDivision);
         tvSoldQuantity = (TextView) view.findViewById(R.id.tvSoldMessage);

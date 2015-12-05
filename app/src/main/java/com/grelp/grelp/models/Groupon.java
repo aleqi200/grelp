@@ -24,6 +24,7 @@ public class Groupon implements Parcelable {
     private final String announcementTitle;
     private final String shortAnnouncementTitle;
     private final String soldQuantity;
+    private final String smallImageUrl;
     private final String grid4ImageUrl;
     private final GrouponDivision division;
     private final double distance;
@@ -41,6 +42,7 @@ public class Groupon implements Parcelable {
         this.announcementTitle = builder.announcementTitle;
         this.shortAnnouncementTitle = builder.shortAnnouncementTitle;
         this.soldQuantity = builder.soldQuantity;
+        this.smallImageUrl = builder.smallImageUrl;
         this.grid4ImageUrl = builder.grid4ImageUrl;
         this.distance = builder.distance;
         this.division = builder.division;
@@ -74,6 +76,10 @@ public class Groupon implements Parcelable {
 
     public String getSoldQuantity() {
         return soldQuantity;
+    }
+
+    public String getSmallImageUrl() {
+        return smallImageUrl;
     }
 
     public String getGrid4ImageUrl() {
@@ -129,6 +135,7 @@ public class Groupon implements Parcelable {
         String announcementTitle = jsonObject.getString("announcementTitle");
         String shortAnnouncementTitle = jsonObject.getString("shortAnnouncementTitle");
         String soldQuantity = jsonObject.getString("soldQuantityMessage");
+        String smallImageUrl = jsonObject.getString("smallImageUrl");
         String grid4ImageUrl = jsonObject.getString("grid4ImageUrl");
 
         JSONObject divisionObject = jsonObject.getJSONObject("division");
@@ -167,6 +174,7 @@ public class Groupon implements Parcelable {
                 .withShortAnnouncementTitle(shortAnnouncementTitle)
                 .withTitle(title)
                 .withSoldQuantity(soldQuantity)
+                .withSmallImageUrl(smallImageUrl)
                 .withGrid4ImageUrl(grid4ImageUrl)
                 .withDistance(distance)
                 .withDivision(division)
@@ -180,8 +188,8 @@ public class Groupon implements Parcelable {
         return groupon;
     }
 
-    public static List<Groupon> fromJSONArray(JSONArray jsonArray) throws JSONException {
-        List<Groupon> groupons = new ArrayList<>();
+    public static ArrayList<Groupon> fromJSONArray(JSONArray jsonArray) throws JSONException {
+        ArrayList<Groupon> groupons = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i++) {
             Groupon groupon = fromJSONObject(jsonArray.getJSONObject(i));
             groupons.add(groupon);
@@ -196,6 +204,7 @@ public class Groupon implements Parcelable {
         private String announcementTitle;
         private String shortAnnouncementTitle;
         private String soldQuantity;
+        private String smallImageUrl;
         private String grid4ImageUrl;
         private GrouponDivision division;
         private double distance;
@@ -232,6 +241,11 @@ public class Groupon implements Parcelable {
 
         public Builder withSoldQuantity(String soldQuantity) {
             this.soldQuantity = soldQuantity;
+            return this;
+        }
+
+        public Builder withSmallImageUrl(String smallImageUrl) {
+            this.smallImageUrl = smallImageUrl;
             return this;
         }
 
@@ -299,6 +313,7 @@ public class Groupon implements Parcelable {
         dest.writeString(this.announcementTitle);
         dest.writeString(this.shortAnnouncementTitle);
         dest.writeString(this.soldQuantity);
+        dest.writeString(this.smallImageUrl);
         dest.writeString(this.grid4ImageUrl);
         dest.writeParcelable(this.division, 0);
         dest.writeDouble(this.distance);
@@ -317,6 +332,7 @@ public class Groupon implements Parcelable {
         this.announcementTitle = in.readString();
         this.shortAnnouncementTitle = in.readString();
         this.soldQuantity = in.readString();
+        this.smallImageUrl = in.readString();
         this.grid4ImageUrl = in.readString();
         this.division = in.readParcelable(GrouponDivision.class.getClassLoader());
         this.distance = in.readDouble();
