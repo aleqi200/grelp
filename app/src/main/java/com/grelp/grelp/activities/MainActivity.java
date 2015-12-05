@@ -3,6 +3,7 @@ package com.grelp.grelp.activities;
 import android.content.pm.PackageManager;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -17,18 +18,27 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.grelp.grelp.R;
 import com.grelp.grelp.fragments.DealListFragment;
 import com.grelp.grelp.fragments.DealMapFragment;
+import com.grelp.grelp.fragments.YelpDetailFragment;
+import com.grelp.grelp.models.Groupon;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity implements DealListFragment.OnItemsAdded {
 
     private static final int PERMISSION_REQUEST_CODE = 1;
 
-    private SectionsPagerAdapter mSectionsPagerAdapter;
-    private ViewPager mViewPager;
+
+
+    private ArrayList<Groupon> groupons = new ArrayList<>();
+    private DealListFragment dealListFragment;
+    private DealMapFragment dealMapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,14 +51,7 @@ public class MainActivity extends AppCompatActivity {
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
 
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
-        // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
+        showDealList();
     }
 
 
@@ -65,46 +68,45 @@ public class MainActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
+        if (id == R.id.action_list_view) {
+            showDealList();
+        }
+        if (id == R.id.action_show_map) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.setCustomAnimations(R.anim.animation_fade_in, R.anim.animation_fade_out);
+            if (dealMapFragment == null) {
+                dealMapFragment = DealMapFragment.newInstance(groupons);
+            }
+            transaction.replace(R.id.container, dealMapFragment);
+            transaction.commit();
+        }
         return super.onOptionsItemSelected(item);
     }
 
-
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
+    private void showDealList() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.setCustomAnimations(R.anim.animation_fade_in, R.anim.animation_fade_out);
+        if (dealListFragment == null) {
+            dealListFragment = DealListFragment.newInstance(null, groupons);
         }
+        transaction.replace(R.id.container, dealListFragment);
+        transaction.commit();
+    }
 
-        @Override
-        public Fragment getItem(int position) {
-            if (position == 0) {
-                return DealListFragment.newInstance(null);
-            } else if (position == 1) {
-                return DealMapFragment.newInstance();
-            }
-            return null;
+    @Override
+    public void onAdded(ArrayList<Groupon> grouponsAdded) {
+        //Fragment mapsFragment = mSectionsPagerAdapter.getItem(1);
+        if (groupons.isEmpty()) {
+            groupons.addAll(grouponsAdded);
         }
-
-        @Override
-        public int getCount() {
-            return 2;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "DEALS";
-                case 1:
-                    return "MAP";
-            }
-            return null;
-        }
+//        if (mapsFragment != null && mapsFragment instanceof DealMapFragment) {
+//            // If article frag is available, we're in two-pane layout...
+//
+//            // Call a method in the ArticleFragment to update its content
+//            ((DealMapFragment) mapsFragment).addGroupons(grouponsAdded);
+//        }
     }
 
     /**

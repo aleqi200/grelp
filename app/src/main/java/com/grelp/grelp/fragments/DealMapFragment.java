@@ -6,6 +6,11 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -18,6 +23,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.BounceInterpolator;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -37,15 +44,21 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.grelp.grelp.R;
+import com.grelp.grelp.activities.GrouponDetailActivity;
 import com.grelp.grelp.models.Groupon;
 import com.grelp.grelp.data.GrouponClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -58,27 +71,30 @@ public class DealMapFragment extends Fragment implements
     private final static LatLng DEFAULT_LOCATION = new LatLng(37.4292, -122.1381);
     private final static String LOG_TAG = "DealMap";
 
-    private GrouponClient grouponClient;
-    private List<Groupon> groupons;
+    private ArrayList<Groupon> groupons = new ArrayList<>();
     private GoogleMap map;
     private GoogleApiClient mGoogleApiClient;
-    private static final long UPDATE_INTERVAL = 60000;  /* 60 secs */
+    private static final long UPDATE_INTERVAL = 60000 * 60;  /* 60 secs */
     private static final long FASTEST_INTERVAL = 5000; /* 5 secs */
     private static final int PERMISSION_REQUEST_CODE = 1;
     private boolean useGPSLocation = false;
+    private Marker currentlyClickedMarker;
 
     public DealMapFragment() {
     }
 
-    public static DealMapFragment newInstance() {
-        return new DealMapFragment();
+    public static DealMapFragment newInstance(ArrayList<Groupon> groupons) {
+        Bundle args = new Bundle();
+        args.putParcelableArrayList("groupons", groupons);
+        DealMapFragment fragment = new DealMapFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        grouponClient = GrouponClient.getInstance();
-        groupons = new LinkedList<>();
+        groupons = getArguments().getParcelableArrayList("groupons");
     }
 
     @Override
@@ -97,13 +113,15 @@ public class DealMapFragment extends Fragment implements
 
         getChildFragmentManager().beginTransaction().add(R.id.mpDeals, mapFragment).commit();
         getChildFragmentManager().executePendingTransactions();
-        getGroupons(0);
+        addGroupons(this.groupons);
         return view;
     }
 
     protected void loadMap(GoogleMap googleMap) {
         map = googleMap;
         if (map != null) {
+            map.setInfoWindowAdapter(new CustomInfoWindowAdapter(getActivity().getLayoutInflater()));
+            map.setOnInfoWindowClickListener(new OnItemClick());
             // Map is ready
             boolean locationPermissionGiven = checkPermission();
             if (!locationPermissionGiven) {
@@ -111,7 +129,6 @@ public class DealMapFragment extends Fragment implements
             }
             Toast.makeText(getActivity(), "Map Fragment was loaded properly!", Toast.LENGTH_SHORT).show();
             map.setMyLocationEnabled(locationPermissionGiven);
-
             // Now that map has loaded, let's get our location!
             mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                     .addApi(LocationServices.API)
@@ -119,7 +136,15 @@ public class DealMapFragment extends Fragment implements
                     .addOnConnectionFailedListener(this).build();
 
             connectClient();
-
+            int i = 0;
+            for (Groupon groupon : groupons) {
+                createMarker(i, groupon);
+                i++;
+            }
+            if (!groupons.isEmpty()) {
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(groupons.get(0).getLat(), groupons.get(0).getLng()), 5);
+                map.animateCamera(cameraUpdate);
+            }
         } else {
             Log.e(LOG_TAG, "Error - Map was null!!");
         }
@@ -145,38 +170,24 @@ public class DealMapFragment extends Fragment implements
         }
     }
 
-    public void getGroupons(int offset) {
-        Log.d(LOG_TAG, "getGroupons(offset = " + offset + ")");
+    public void addGroupons(ArrayList<Groupon> newGroupons) {
+        Log.d(LOG_TAG, "adding groupons to map: " + newGroupons.size());
 
-        grouponClient.getDeals(new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                try {
+        groupons.addAll(newGroupons);
 
-                    JSONArray dealsArray = response.getJSONArray("deals");
-                    groupons.addAll(Groupon.fromJSONArray(dealsArray));
-                    for (Groupon groupon : groupons) {
-                        LatLng point = new LatLng(groupon.getLat(), groupon.getLng());
-                        BitmapDescriptor defaultMarker =
-                                BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
-                        Marker marker = map.addMarker(new MarkerOptions()
-                                .position(point)
-                                .title(groupon.getTitle())
-                                .snippet("" + groupon.getDistance())
-                                .icon(defaultMarker));
-                        dropPinEffect(marker);
-                    }
-                } catch (JSONException e) {
-                    Log.e(LOG_TAG, "Error while parsing json object: " + response, e);
-                }
-            }
+    }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable,
-                                  JSONObject response) {
-                Log.e(LOG_TAG, "Error while retrieving groupons" + Log.getStackTraceString(throwable));
-            }
-        }, null, offset);
+    private void createMarker(int i, final Groupon groupon) {
+        //add marker to Map
+        LatLng point = new LatLng(groupon.getLat(), groupon.getLng());
+
+        Marker marker = map.addMarker(new MarkerOptions()
+                .position(point)
+                .title(groupon.getTitle())
+                .snippet("" + i) // store the index in the array
+                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_groupon_round_logo)));
+
+        dropPinEffect(marker);
     }
 
     private void dropPinEffect(final Marker marker) {
@@ -367,6 +378,62 @@ public class DealMapFragment extends Fragment implements
         } else {
             Toast.makeText(getActivity(),
                     "Sorry. Location services not available to you", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
+
+        private View view;
+        LayoutInflater inflater = null;
+
+        public CustomInfoWindowAdapter(LayoutInflater inflater) {
+            //Inflating the InfoWindow view.
+            this.inflater = inflater;
+            view = inflater.inflate(R.layout.map_deal_item, null);
+        }
+
+        @Override
+        public View getInfoContents(final Marker marker) {
+            //Re-show InfoWindow if it already shown
+            if ( currentlyClickedMarker != null && currentlyClickedMarker.isInfoWindowShown() ) {
+                currentlyClickedMarker.hideInfoWindow();
+                currentlyClickedMarker.showInfoWindow();
+            }
+            return null;
+        }
+
+        @Override
+        public View getInfoWindow(final Marker marker) {
+            currentlyClickedMarker = marker;
+            TextView venueName = (TextView) view.findViewById(R.id.tvMapDealTitle);
+            TextView venueAddress = (TextView) view.findViewById(R.id.tvMapDistance);
+            ImageView venueLogo = (ImageView) view.findViewById(R.id.ivMapDealImage);
+            //Get the Image from web using Picasso and update the info contents
+            Groupon groupon = groupons.get(Integer.parseInt(marker.getSnippet()));
+            Picasso.with(getActivity()).load(groupon.getGrid4ImageUrl()).into(venueLogo, new Callback() {
+                @Override
+                public void onSuccess() {
+                    getInfoContents(marker);
+                }
+
+                @Override
+                public void onError() {
+                }
+            });
+            venueName.setText(groupon.getShortAnnouncementTitle());
+            venueAddress.setText(groupon.getDistance() + " mi");
+            return view;
+        }
+    }
+
+    private class OnItemClick implements GoogleMap.OnInfoWindowClickListener {
+
+        @Override
+        public void onInfoWindowClick(Marker marker) {
+            Groupon groupon = groupons.get(Integer.parseInt(marker.getSnippet()));
+            Intent grpnDetailIntent = new Intent(getContext(), GrouponDetailActivity.class);
+            grpnDetailIntent.putExtra("groupon", groupon);
+            getContext().startActivity(grpnDetailIntent);
         }
     }
 }

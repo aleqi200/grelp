@@ -1,5 +1,6 @@
 package com.grelp.grelp.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
 import android.net.ConnectivityManager;
@@ -26,22 +27,26 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
 
 public class DealListFragment extends Fragment {
     private static final String LOG_TAG = "DealList";
 
     private Location location;
-
     private RecyclerView rvGroupons;
     private GrouponArrayAdapter grouponAdapter;
     private GrouponClient grouponClient;
     private LinearLayoutManager mLayoutManager;
+    private List<Groupon> groupons;
+    private List<OnItemsAdded> callbacks = new ArrayList<>();
 
 
-    public static DealListFragment newInstance(Location location) {
+    public static DealListFragment newInstance(Location location, ArrayList<Groupon> groupons) {
         DealListFragment fragment = new DealListFragment();
         Bundle args = new Bundle();
         args.putParcelable("location", location);
+        args.putParcelableArrayList("groupons", groupons);
         fragment.setArguments(args);
         return fragment;
     }
@@ -56,7 +61,6 @@ public class DealListFragment extends Fragment {
         if (getArguments() != null) {
             location = getArguments().getParcelable("location");
         }
-
         grouponClient = GrouponClient.getInstance();
         getGroupons(0);
     }
@@ -79,7 +83,11 @@ public class DealListFragment extends Fragment {
                 return true;
             }
         });
-
+        groupons = getArguments().getParcelableArrayList("groupons");
+        if (groupons != null && !groupons.isEmpty()) {
+            grouponAdapter.addAll(groupons);
+            grouponAdapter.notifyDataSetChanged();
+        }
         return v;
     }
 
@@ -91,13 +99,19 @@ public class DealListFragment extends Fragment {
             return;
         }
 
+
         grouponClient.getDeals(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
 
                     JSONArray dealsArray = response.getJSONArray("deals");
-                    grouponAdapter.addAll(Groupon.fromJSONArray(dealsArray));
+                    ArrayList<Groupon> groupons = Groupon.fromJSONArray(dealsArray);
+                    // invoke callback
+                    for (OnItemsAdded callback : callbacks) {
+                        callback.onAdded(groupons);
+                    }
+                    grouponAdapter.addAll(groupons);
                     grouponAdapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     Log.e(LOG_TAG, "Error while parsing json object: " + response, e);
@@ -118,6 +132,25 @@ public class DealListFragment extends Fragment {
                 = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+    }
+
+    // Container Activity must implement this interface
+    public interface OnItemsAdded {
+        void onAdded(ArrayList<Groupon> grouponsAdded);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            callbacks.add((OnItemsAdded) context);
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement OnHeadlineSelectedListener");
+        }
     }
 
 }

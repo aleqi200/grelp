@@ -40,8 +40,8 @@ public class GrouponAdapter extends ArrayAdapter<Groupon> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_groupon,
                                                                     parent, false);
             viewHolder = new GrouponViewHolder();
-            viewHolder.ivDealImage = (ImageView) convertView.findViewById(R.id.ivDealImage);
-            viewHolder.tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
+            viewHolder.ivDealImage = (ImageView) convertView.findViewById(R.id.ivMapDealImage);
+            viewHolder.tvTitle = (TextView) convertView.findViewById(R.id.tvMapDealTitle);
             viewHolder.tvDistance = (TextView) convertView.findViewById(R.id.tvDistance);
             viewHolder.tvDivision = (TextView) convertView.findViewById(R.id.tvDivision);
             viewHolder.tvSoldQuantity = (TextView) convertView.findViewById(R.id.tvSoldMessage);
