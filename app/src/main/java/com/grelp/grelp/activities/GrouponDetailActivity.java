@@ -1,22 +1,23 @@
 package com.grelp.grelp.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
+import android.util.Pair;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.location.places.Place;
 import com.grelp.grelp.R;
 import com.grelp.grelp.data.GooglePlacesAPI;
+import com.grelp.grelp.data.FourSquareClient;
 import com.grelp.grelp.data.GrouponClient;
 import com.grelp.grelp.data.YelpAPI;
 import com.grelp.grelp.fragments.YelpDetailFragment;
+import com.grelp.grelp.models.FourSquareVenue;
 import com.grelp.grelp.models.Groupon;
 import com.grelp.grelp.models.GrouponMerchant;
 import com.grelp.grelp.models.RedemptionLocation;
@@ -25,18 +26,20 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.squareup.picasso.Picasso;
 
 import org.apache.http.Header;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Collection;
 import java.util.LinkedList;
 
 public class GrouponDetailActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = "GrouponDetail";
     private GrouponClient grouponClient;
+    private FourSquareClient fourSquareClient;
     private Groupon groupon;
     private GrouponMerchant merchant;
+    private FourSquareVenue fourSquareVenue;
     private ImageView ivDetailedImage;
     private TextView tvDetailedTitle;
     private GooglePlacesAPI googlePlacesAPI;
@@ -52,7 +55,7 @@ public class GrouponDetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         grouponClient = GrouponClient.getInstance();
         googlePlacesAPI = new GooglePlacesAPI(this);
-
+        fourSquareClient = FourSquareClient.getInstance();
         setupViews();
         getGrouponMerchant();
     }
@@ -99,24 +102,10 @@ public class GrouponDetailActivity extends AppCompatActivity {
     }
 
     private void searchForMerchantOnYelp() {
-        double lat = merchant.getLat();
-        double lng = merchant.getLng();
-        LinkedList<RedemptionLocation> locations = new LinkedList<>(groupon.getUniqueRedemptionLocations());
-        if (locations.size() > 1) {
-            Log.d("multiple_locations", groupon.getId());
-        }
-        RedemptionLocation firstLocation = locations.getFirst();// only first one for now need to handle multiple locations
-        if (lat == 0 || lng == 0) {
-            lat = firstLocation.getLat(); // get from redemption location first
-            lng = firstLocation.getLng();
-            if (lat == 0 || lng == 0) {
-                lat = groupon.getDivision().getLat(); // resort to division then at last
-                lng = groupon.getDivision().getLng();
-            }
-        }
-        if (lng == 0) {
+        Pair<Double, Double> latlng = getBestLocation();
+        double lat = latlng.first;
+        double lng = latlng.second;
 
-        }
         YelpAPI.getInstance().searchForBusinesses(merchant.getName(), lat, lng,
                 new JsonHttpResponseHandler() {
                     @Override
@@ -125,6 +114,7 @@ public class GrouponDetailActivity extends AppCompatActivity {
                             JSONObject businessObject = response.getJSONArray("businesses").getJSONObject(0);
                             String businessId = businessObject.getString("id");
                             getYelpReviews(businessId);
+                            getFourSquareVenue();
                         } catch (JSONException e) {
                             Log.e(LOG_TAG, "Error while parsing json object: " + response, e);
                         }
@@ -163,5 +153,66 @@ public class GrouponDetailActivity extends AppCompatActivity {
                 Log.e(LOG_TAG, "Error while parsing json object: " + errorResponse, throwable);
             }
         });
+    }
+
+    private void getFourSquareVenue() {
+        Pair<Double, Double> latlng = getBestLocation();
+        double lat = latlng.first;
+        double lng = latlng.second;
+
+        fourSquareClient.searchForVenues(merchant.getName(), lat, lng, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    JSONArray venues = response.getJSONObject("response").getJSONArray("venues");
+                    JSONObject venue = venues.getJSONObject(0);
+                    fourSquareClient.searchForVenueById(venue.getString("id"), new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                            try {
+                                fourSquareVenue =
+                                        FourSquareVenue.fromJSONObject(response.getJSONObject("response").getJSONObject("venue"));
+                            } catch (JSONException e) {
+                                Log.e(LOG_TAG, "Error while parsing json object:" + response, e);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                            Log.e(LOG_TAG, "Error while parsing json object", throwable);
+                        }
+                    });
+                } catch (JSONException e) {
+                    Log.e(LOG_TAG, "Error while parsing json object:" + response, e);
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject jsonObject) {
+                Log.e(LOG_TAG, "Error while parsing json object", throwable);
+            }
+        });
+    }
+
+    private Pair<Double, Double> getBestLocation() {
+        double lat = merchant.getLat();
+        double lng = merchant.getLng();
+        LinkedList<RedemptionLocation> locations = new LinkedList<>(groupon.getUniqueRedemptionLocations());
+        if (locations.size() > 1) {
+            Log.d("multiple_locations", groupon.getId());
+        }
+        RedemptionLocation firstLocation = locations.getFirst();// only first one for now need to handle multiple locations
+        if (lat == 0 || lng == 0) {
+            lat = firstLocation.getLat(); // get from redemption location first
+            lng = firstLocation.getLng();
+            if (lat == 0 || lng == 0) {
+                lat = groupon.getDivision().getLat(); // resort to division then at last
+                lng = groupon.getDivision().getLng();
+            }
+        }
+        if (lng == 0) {
+
+        }
+        return Pair.create(lat, lng);
     }
 }

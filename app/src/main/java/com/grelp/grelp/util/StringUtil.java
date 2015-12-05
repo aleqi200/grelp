@@ -2,9 +2,6 @@ package com.grelp.grelp.util;
 
 import java.util.Collection;
 
-/**
- * Created by acampelo on 11/23/15.
- */
 public final class StringUtil {
 
     private StringUtil() {
