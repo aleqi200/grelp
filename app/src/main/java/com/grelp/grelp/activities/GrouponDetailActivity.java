@@ -11,7 +11,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.location.places.Place;
 import com.grelp.grelp.R;
+import com.grelp.grelp.data.GooglePlacesAPI;
 import com.grelp.grelp.data.GrouponClient;
 import com.grelp.grelp.data.YelpAPI;
 import com.grelp.grelp.fragments.YelpDetailFragment;
@@ -37,6 +39,7 @@ public class GrouponDetailActivity extends AppCompatActivity {
     private GrouponMerchant merchant;
     private ImageView ivDetailedImage;
     private TextView tvDetailedTitle;
+    private GooglePlacesAPI googlePlacesAPI;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +51,8 @@ public class GrouponDetailActivity extends AppCompatActivity {
         toolbar.setLogo(R.mipmap.ic_launcher);
         setSupportActionBar(toolbar);
         grouponClient = GrouponClient.getInstance();
+        googlePlacesAPI = new GooglePlacesAPI(this);
+
         setupViews();
         getGrouponMerchant();
     }
@@ -65,7 +70,7 @@ public class GrouponDetailActivity extends AppCompatActivity {
                 try {
                     merchant = GrouponMerchant.fromJSONObject(response.getJSONObject("merchant"));
                     searchForMerchantOnYelp();
-
+                    searchForMerchantOnGooglePlaces();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -77,6 +82,20 @@ public class GrouponDetailActivity extends AppCompatActivity {
             }
 
         }, groupon.getMerchant().getId());
+    }
+
+    private void searchForMerchantOnGooglePlaces() {
+        googlePlacesAPI.findPlace(merchant.getLat(), merchant.getLng(), merchant.getName(), new GooglePlacesAPI.PlaceListener() {
+
+            @Override
+            public void foundPlace(Place place) {
+                if(place != null) {
+                    Log.d("GOOGLE_PLACES_API", "Got place: " + place.getName());
+                } else {
+                    Log.d("GOOGLE_PLACES_API", "Failed to find place via google: " + merchant.getName());
+                }
+            }
+        });
     }
 
     private void searchForMerchantOnYelp() {
