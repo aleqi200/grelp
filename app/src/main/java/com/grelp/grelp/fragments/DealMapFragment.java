@@ -60,10 +60,8 @@ public class DealMapFragment extends Fragment implements
 
     private GrouponClient grouponClient;
     private List<Groupon> groupons;
-    private SupportMapFragment mapFragment;
     private GoogleMap map;
     private GoogleApiClient mGoogleApiClient;
-    private LocationRequest mLocationRequest;
     private static final long UPDATE_INTERVAL = 60000;  /* 60 secs */
     private static final long FASTEST_INTERVAL = 5000; /* 5 secs */
     private static final int PERMISSION_REQUEST_CODE = 1;
@@ -89,7 +87,7 @@ public class DealMapFragment extends Fragment implements
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
-        mapFragment = new SupportMapFragment();
+        SupportMapFragment mapFragment = new SupportMapFragment();
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap map) {
@@ -123,7 +121,7 @@ public class DealMapFragment extends Fragment implements
             connectClient();
 
         } else {
-            Toast.makeText(getActivity(), "Error - Map was null!!", Toast.LENGTH_SHORT).show();
+            Log.e(LOG_TAG, "Error - Map was null!!");
         }
     }
 
@@ -139,8 +137,8 @@ public class DealMapFragment extends Fragment implements
     private void requestPermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION)) {
-            Toast.makeText(getContext(), "GPS permission allows us to access location data. " +
-                    "Please allow in App Settings for additional functionality.", Toast.LENGTH_LONG).show();
+            Log.d(LOG_TAG, "GPS permission allows us to access location data. " +
+                    "Please allow in App Settings for additional functionality.");
         } else {
             ActivityCompat.requestPermissions(getActivity(),
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
@@ -313,7 +311,7 @@ public class DealMapFragment extends Fragment implements
     }
 
     protected void startLocationUpdates() {
-        mLocationRequest = new LocationRequest();
+        LocationRequest mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         mLocationRequest.setInterval(UPDATE_INTERVAL);
         mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
@@ -326,7 +324,7 @@ public class DealMapFragment extends Fragment implements
         String msg = "Updated Location: " +
                 Double.toString(location.getLatitude()) + "," +
                 Double.toString(location.getLongitude());
-        Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+        Log.d(LOG_TAG, msg);
 
     }
 
@@ -371,7 +369,4 @@ public class DealMapFragment extends Fragment implements
                     "Sorry. Location services not available to you", Toast.LENGTH_LONG).show();
         }
     }
-
-    // Define a DialogFragment that displays the error dialog
-
 }

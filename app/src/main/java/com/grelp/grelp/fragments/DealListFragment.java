@@ -7,6 +7,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +20,8 @@ import android.widget.Toast;
 import com.grelp.grelp.R;
 import com.grelp.grelp.activities.GrouponDetailActivity;
 import com.grelp.grelp.adapters.GrouponAdapter;
+import com.grelp.grelp.adapters.GrouponArrayAdapter;
+import com.grelp.grelp.listeners.EndlessRecyclerOnScrollListener;
 import com.grelp.grelp.listeners.InfiniteScrollListener;
 import com.grelp.grelp.models.Groupon;
 import com.grelp.grelp.data.GrouponClient;
@@ -29,7 +33,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.LinkedList;
-import java.util.List;
 
 
 public class DealListFragment extends Fragment {
@@ -37,10 +40,11 @@ public class DealListFragment extends Fragment {
 
     private Location location;
 
-    private ListView lvGroupons;
-    private GrouponAdapter grouponAdapter;
+    private RecyclerView rvGroupons;
+    private GrouponArrayAdapter grouponAdapter;
     private GrouponClient grouponClient;
-    private List<Groupon> groupons;
+    private LinearLayoutManager mLayoutManager;
+
 
     public static DealListFragment newInstance(Location location) {
         DealListFragment fragment = new DealListFragment();
@@ -71,24 +75,16 @@ public class DealListFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_deal_list, container, false);
 
-        lvGroupons = (ListView) v.findViewById(R.id.lvGroupons);
-        groupons = new LinkedList<>();
-        grouponAdapter = new GrouponAdapter(getContext(), groupons);
-        lvGroupons.setAdapter(grouponAdapter);
-        lvGroupons.setOnScrollListener(new InfiniteScrollListener() {
+        rvGroupons = (RecyclerView) v.findViewById(R.id.lvGroupons);
+        mLayoutManager = new LinearLayoutManager(getContext());
+        rvGroupons.setLayoutManager(mLayoutManager);
+        grouponAdapter = new GrouponArrayAdapter(getContext());
+        rvGroupons.setAdapter(grouponAdapter);
+        rvGroupons.addOnScrollListener(new EndlessRecyclerOnScrollListener(mLayoutManager) {
             @Override
-            public boolean onLoadMore(int page, int totalItemsCount) {
-                getGroupons(page);
+            public boolean onLoadMore(int offset) {
+                getGroupons(offset);
                 return true;
-            }
-        });
-        lvGroupons.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent grpnDetailIntent = new Intent(getContext(), GrouponDetailActivity.class);
-                Groupon groupon = grouponAdapter.getItem(position);
-                grpnDetailIntent.putExtra("groupon", groupon);
-                startActivity(grpnDetailIntent);
             }
         });
 
@@ -110,6 +106,7 @@ public class DealListFragment extends Fragment {
 
                     JSONArray dealsArray = response.getJSONArray("deals");
                     grouponAdapter.addAll(Groupon.fromJSONArray(dealsArray));
+                    grouponAdapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     Log.e(LOG_TAG, "Error while parsing json object: " + response, e);
                 }
