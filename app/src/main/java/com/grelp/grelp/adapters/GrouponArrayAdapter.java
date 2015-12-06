@@ -43,6 +43,7 @@ public class GrouponArrayAdapter extends RecyclerView.Adapter<GrouponViewHolder>
 
     public void addAll(List<Groupon> groupons) {
         this.groupons.addAll(groupons);
+        notifyDataSetChanged();
     }
 
     @Override

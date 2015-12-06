@@ -325,7 +325,7 @@ public class Groupon implements Parcelable {
         dest.writeTypedList(this.options);
     }
 
-    private Groupon(Parcel in) {
+    protected Groupon(Parcel in) {
         this.id = in.readString();
         this.uuid = in.readString();
         this.title = in.readString();
