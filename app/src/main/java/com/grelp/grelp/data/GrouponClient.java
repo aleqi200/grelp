@@ -1,15 +1,26 @@
 package com.grelp.grelp.data;
 
 import android.location.Location;
+import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.grelp.grelp.models.Groupon;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import org.apache.http.Header;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class GrouponClient {
+    private static final String LOG_TAG = GrouponClient.class.getName();
 
     private static final String GROUPON_URL = "https://api.groupon.com";
     private static final String DEALS_SEARCH_URI = "v2/deals/search";
@@ -45,7 +56,7 @@ public class GrouponClient {
         return buffer.toString();
     }
 
-    public void getDeals(AsyncHttpResponseHandler handler, Location location, int offset) {
+    public void getDeals(AsyncHttpResponseHandler handler, LatLng location, int offset) {
         RequestParams requestParams = new RequestParams();
         String dateTime = dateFormat.format(new Date());
         requestParams.add("datetime", dateTime);
@@ -53,8 +64,8 @@ public class GrouponClient {
         requestParams.add("client_id", GAPI_CLIENT_ID);
         requestParams.add("consumer_id", CONSUMER_ID);
         if (location != null) {
-            requestParams.add("lat", "" + location.getLatitude());
-            requestParams.add("lng", "" + location.getLongitude());
+            requestParams.add("lat", "" + location.latitude);
+            requestParams.add("lng", "" + location.longitude);
         } else {
             requestParams.add("filter", "division:san-francisco");
         }
@@ -81,11 +92,37 @@ public class GrouponClient {
         get(handler, getApiUrl(GROUPON_URL, MERCHANT_SERVICE_URI, merchantUuid), requestParams);
     }
 
-    public void get(AsyncHttpResponseHandler handler, String apiUrl) {
+    private void get(AsyncHttpResponseHandler handler, String apiUrl) {
         httpClient.get(apiUrl, handler);
     }
 
-    public void get(AsyncHttpResponseHandler handler, String apiUrl, RequestParams params) {
+    private void get(AsyncHttpResponseHandler handler, String apiUrl, RequestParams params) {
         httpClient.get(apiUrl, params, handler);
+    }
+
+    public interface GrouponListener {
+        void handleGroupons(ArrayList<Groupon> groupons);
+    }
+
+    public void getGroupons(LatLng location, int offset, final GrouponListener listener) {
+        getDeals(new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+
+                    JSONArray dealsArray = response.getJSONArray("deals");
+                    ArrayList<Groupon> groupons = Groupon.fromJSONArray(dealsArray);
+                    listener.handleGroupons(groupons);
+                } catch (JSONException e) {
+                    Log.e(LOG_TAG, "Error while parsing json object: " + response, e);
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject response) {
+                Log.e(LOG_TAG, "Error while retrieving groupons" + Log.getStackTraceString(throwable));
+                listener.handleGroupons(null);
+            }
+        }, location, offset);
     }
 }

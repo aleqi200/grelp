@@ -46,11 +46,6 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <!--
-            <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyD26n8P_N15DLoUP630EgBr-VvMdEu76U0"/>
-        -->
         <activity
             android:name=".activities.FourSquareActivity"
             android:label="@string/title_activity_four_square" >

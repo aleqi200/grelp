@@ -74,7 +74,10 @@ public class YelpBusiness implements Parcelable {
 
     public static YelpBusiness fromJSONObject(JSONObject jsonObject) throws JSONException {
         String id = jsonObject.getString("id");
-        String imageUrl = jsonObject.getString("image_url");
+        String imageUrl = null;
+        if(jsonObject.has("image_url")) {
+            imageUrl = jsonObject.getString("image_url");
+        }
         String ratingImgUrl = jsonObject.getString("rating_img_url");
         String name = jsonObject.getString("name");
         String phone = jsonObject.getString("display_phone");
@@ -83,8 +86,12 @@ public class YelpBusiness implements Parcelable {
         }
         int reviewCount = jsonObject.getInt("review_count");
         double rating = jsonObject.getDouble("rating");
-        JSONArray reviewArray = jsonObject.getJSONArray("reviews");
-        List<YelpReview> reviews = YelpReview.fromJSONArray(reviewArray);
+
+        List<YelpReview> reviews = null;
+        if(jsonObject.has("reviews")) {
+            JSONArray reviewArray = jsonObject.getJSONArray("reviews");
+            reviews = YelpReview.fromJSONArray(reviewArray);
+        }
         JSONArray categoriesArray = jsonObject.getJSONArray("categories");
         List<String> categories = new ArrayList<>(categoriesArray.length());
         for (int i = 0; i < categoriesArray.length(); i++) {

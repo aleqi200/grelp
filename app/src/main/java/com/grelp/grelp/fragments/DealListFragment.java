@@ -16,11 +16,13 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.grelp.grelp.R;
 import com.grelp.grelp.adapters.GrouponArrayAdapter;
 import com.grelp.grelp.data.GrouponClient;
 import com.grelp.grelp.listeners.EndlessRecyclerOnScrollListener;
 import com.grelp.grelp.models.Groupon;
+import com.grelp.grelp.util.NetworkUtil;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -36,21 +38,15 @@ import dmax.dialog.SpotsDialog;
 public class DealListFragment extends Fragment {
     private static final String LOG_TAG = "DealList";
 
-    private Location location;
+    private LatLng latLng;
     private RecyclerView rvGroupons;
     private GrouponArrayAdapter grouponAdapter;
     private GrouponClient grouponClient;
     private LinearLayoutManager mLayoutManager;
-    private List<Groupon> groupons;
-    private List<OnItemsAdded> callbacks = new ArrayList<>();
+    private AlertDialog dialog;
 
-
-    public static DealListFragment newInstance(Location location, ArrayList<Groupon> groupons) {
+    public static DealListFragment newInstance() {
         DealListFragment fragment = new DealListFragment();
-        Bundle args = new Bundle();
-        args.putParcelable("location", location);
-        args.putParcelableArrayList("groupons", groupons);
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -61,11 +57,7 @@ public class DealListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            location = getArguments().getParcelable("location");
-        }
         grouponClient = GrouponClient.getInstance();
-        getGroupons(0);
     }
 
     @Override
@@ -86,79 +78,36 @@ public class DealListFragment extends Fragment {
                 return true;
             }
         });
+        dialog = new SpotsDialog(getContext());
+        dialog.show();
 
-        groupons = getArguments().getParcelableArrayList("groupons");
-        if (groupons != null && !groupons.isEmpty()) {
-            grouponAdapter.addAll(groupons);
-            grouponAdapter.notifyDataSetChanged();
-        }
         return v;
+    }
+
+    public void setLocation(LatLng latLng) {
+        this.latLng = latLng;
+        getGroupons(0);
     }
 
     public void getGroupons(int offset) {
         Log.d(LOG_TAG, "getGroupons(offset = " + offset + ")");
 
-        if (!isNetworkAvailable()) {
-            Toast.makeText(getContext(), "Network not available", Toast.LENGTH_LONG).show();
+        if (!NetworkUtil.isNetworkAvailable(getActivity())) {
+            Toast.makeText(getActivity(), "Network not available", Toast.LENGTH_LONG).show();
             return;
         }
-        if (offset == 0 && (groupons != null && !groupons.isEmpty())) {
+        if (offset == 0 && grouponAdapter.getItemCount() > 0) {
             return;
         }
-        final AlertDialog dialog = new SpotsDialog(getContext());
-        dialog.show();
-        grouponClient.getDeals(new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                try {
 
-                    JSONArray dealsArray = response.getJSONArray("deals");
-                    ArrayList<Groupon> groupons = Groupon.fromJSONArray(dealsArray);
-                    // invoke callback
-                    for (OnItemsAdded callback : callbacks) {
-                        callback.onAdded(groupons);
-                    }
+        grouponClient.getGroupons(latLng, offset, new GrouponClient.GrouponListener() {
+            @Override
+            public void handleGroupons(ArrayList<Groupon> groupons) {
+                if (groupons != null) {
                     grouponAdapter.addAll(groupons);
-                    grouponAdapter.notifyDataSetChanged();
-                    dialog.dismiss();
-                } catch (JSONException e) {
-                    Log.e(LOG_TAG, "Error while parsing json object: " + response, e);
                 }
+                dialog.dismiss();
             }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable,
-                                  JSONObject response) {
-                Log.e(LOG_TAG, "Error while retrieving groupons" + Log.getStackTraceString(throwable));
-            }
-        }, null, offset);
+        });
     }
-
-    //Check to see if network is available before making external service calls
-    private Boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
-    }
-
-    // Container Activity must implement this interface
-    public interface OnItemsAdded {
-        void onAdded(ArrayList<Groupon> grouponsAdded);
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        // This makes sure that the container activity has implemented
-        // the callback interface. If not, it throws an exception
-        try {
-            callbacks.add((OnItemsAdded) context);
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString()
-                    + " must implement OnHeadlineSelectedListener");
-        }
-    }
-
 }

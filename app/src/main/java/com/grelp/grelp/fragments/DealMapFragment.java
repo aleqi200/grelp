@@ -47,6 +47,7 @@ import com.grelp.grelp.R;
 import com.grelp.grelp.activities.GrouponDetailActivity;
 import com.grelp.grelp.models.Groupon;
 import com.grelp.grelp.data.GrouponClient;
+import com.grelp.grelp.util.NetworkUtil;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -62,39 +63,28 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class DealMapFragment extends Fragment implements
-        GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
-
-    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
-    private final static LatLng DEFAULT_LOCATION = new LatLng(37.4292, -122.1381);
+public class DealMapFragment extends Fragment implements GrouponClient.GrouponListener
+{
     private final static String LOG_TAG = "DealMap";
 
     private ArrayList<Groupon> groupons = new ArrayList<>();
     private GoogleMap map;
-    private GoogleApiClient mGoogleApiClient;
-    private static final long UPDATE_INTERVAL = 60000 * 60;  /* 60 secs */
-    private static final long FASTEST_INTERVAL = 5000; /* 5 secs */
-    private static final int PERMISSION_REQUEST_CODE = 1;
-    private boolean useGPSLocation = false;
     private Marker currentlyClickedMarker;
+    private LatLng latLng = NetworkUtil.DEFAULT_LOCATION;
+
+    private GrouponClient grouponClient = GrouponClient.getInstance();
 
     public DealMapFragment() {
     }
 
-    public static DealMapFragment newInstance(ArrayList<Groupon> groupons) {
-        Bundle args = new Bundle();
-        args.putParcelableArrayList("groupons", groupons);
+    public static DealMapFragment newInstance() {
         DealMapFragment fragment = new DealMapFragment();
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        groupons = getArguments().getParcelableArrayList("groupons");
     }
 
     @Override
@@ -113,7 +103,6 @@ public class DealMapFragment extends Fragment implements
 
         getChildFragmentManager().beginTransaction().add(R.id.mpDeals, mapFragment).commit();
         getChildFragmentManager().executePendingTransactions();
-        addGroupons(this.groupons);
         return view;
     }
 
@@ -122,59 +111,14 @@ public class DealMapFragment extends Fragment implements
         if (map != null) {
             map.setInfoWindowAdapter(new CustomInfoWindowAdapter(getActivity().getLayoutInflater()));
             map.setOnInfoWindowClickListener(new OnItemClick());
-            // Map is ready
-            boolean locationPermissionGiven = checkPermission();
-            if (!locationPermissionGiven) {
-                requestPermission();
-            }
-            Toast.makeText(getActivity(), "Map Fragment was loaded properly!", Toast.LENGTH_SHORT).show();
-            map.setMyLocationEnabled(locationPermissionGiven);
-            // Now that map has loaded, let's get our location!
-            mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-                    .addApi(LocationServices.API)
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this).build();
+            map.setMyLocationEnabled(true);
 
-            connectClient();
-            int i = 0;
-            for (Groupon groupon : groupons) {
-                createMarker(i, groupon);
-                i++;
-            }
-            if (!groupons.isEmpty()) {
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(groupons.get(0).getLat(), groupons.get(0).getLng()), 5);
-                map.animateCamera(cameraUpdate);
-            }
+            // Map is ready
+            //Toast.makeText(getActivity(), "Map Fragment was loaded properly!", Toast.LENGTH_SHORT).show();
+            grouponClient.getGroupons(latLng, 0, this);
         } else {
             Log.e(LOG_TAG, "Error - Map was null!!");
         }
-    }
-
-    private boolean checkPermission() {
-        int result = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION);
-        if (result == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private void requestPermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                Manifest.permission.ACCESS_FINE_LOCATION)) {
-            Log.d(LOG_TAG, "GPS permission allows us to access location data. " +
-                    "Please allow in App Settings for additional functionality.");
-        } else {
-            ActivityCompat.requestPermissions(getActivity(),
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
-        }
-    }
-
-    public void addGroupons(ArrayList<Groupon> newGroupons) {
-        Log.d(LOG_TAG, "adding groupons to map: " + newGroupons.size());
-
-        groupons.addAll(newGroupons);
-
     }
 
     private void createMarker(int i, final Groupon groupon) {
@@ -222,162 +166,30 @@ public class DealMapFragment extends Fragment implements
         });
     }
 
-    protected void connectClient() {
-        // Connect the client.
-        if (isGooglePlayServicesAvailable() && mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
-        }
-    }
-
-    /*
-     * Called when the Activity becomes visible.
-    */
     @Override
-    public void onStart() {
-        super.onStart();
-        connectClient();
-    }
+    public void handleGroupons(ArrayList<Groupon> groupons) {
+        this.groupons = groupons;
+        map.clear();
 
-    public void onStop() {
-        // Disconnecting the client invalidates it.
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.disconnect();
-        }
-        super.onStop();
-    }
+        int i = 0;
 
-    /**
-     * Handle results returned to the FragmentActivity by Google Play services
-     *
-     * @param requestCode
-     * @param resultCode
-     * @param data
-     */
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Decide what to do based on the original request code
-        switch (requestCode) {
-            case CONNECTION_FAILURE_RESOLUTION_REQUEST:
-                /*
-                 * If the result code is Activity.RESULT_OK, try to connect again
-                 */
-                switch (resultCode) {
-                    case Activity.RESULT_OK:
-                        mGoogleApiClient.connect();
-                        break;
-                }
-
-        }
-    }
-
-    private boolean isGooglePlayServicesAvailable() {
-        // Check that Google Play services is available
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity());
-        // If Google Play services is available
-        if (ConnectionResult.SUCCESS == resultCode) {
-            // In debug mode, log the status
-            Log.d("Location Updates", "Google Play services is available.");
-            return true;
-        } else {
-            // Get the error dialog from Google Play services
-            Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(resultCode, getActivity(),
-                    CONNECTION_FAILURE_RESOLUTION_REQUEST);
-
-            // If Google Play services can provide an error dialog
-            if (errorDialog != null) {
-                // Create a new DialogFragment for the error dialog
-                ErrorDialogFragment errorFragment = new ErrorDialogFragment();
-                errorFragment.setDialog(errorDialog);
-                errorFragment.show(getActivity().getSupportFragmentManager(), "Location Updates");
+        if(groupons != null && !groupons.isEmpty()) {
+            for (Groupon groupon : groupons) {
+                createMarker(i, groupon);
+                i++;
             }
 
-            return false;
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(groupons.get(0).getLat(), groupons.get(0).getLng()), 5);
+            map.animateCamera(cameraUpdate);
         }
     }
 
-    /*
-    * Called by Location Services when the request to connect the client
-    * finishes successfully. At this point, you can request the current
-    * location or start periodic updates
-    */
-    @Override
-    public void onConnected(Bundle dataBundle) {
-        if (!useGPSLocation) {
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(DEFAULT_LOCATION, 5);
-            map.animateCamera(cameraUpdate);
-            return;
-        }
-        // Display the connection status
-        Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if (location != null) {
-            Toast.makeText(getActivity(), "GPS location was found!", Toast.LENGTH_SHORT).show();
-            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+    public void updateLocation(LatLng latLng) {
+        this.latLng = latLng;
+        if(map != null) {
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 5);
             map.animateCamera(cameraUpdate);
-            startLocationUpdates();
-        } else {
-            Toast.makeText(getActivity(), "Current location was null, enable GPS on emulator!",
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    protected void startLocationUpdates() {
-        LocationRequest mLocationRequest = new LocationRequest();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        mLocationRequest.setInterval(UPDATE_INTERVAL);
-        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
-                mLocationRequest, this);
-    }
-
-    public void onLocationChanged(Location location) {
-        // Report to the UI that the location was updated
-        String msg = "Updated Location: " +
-                Double.toString(location.getLatitude()) + "," +
-                Double.toString(location.getLongitude());
-        Log.d(LOG_TAG, msg);
-
-    }
-
-    /*
-     * Called by Location Services if the connection to the location client
-     * drops because of an error.
-     */
-    @Override
-    public void onConnectionSuspended(int i) {
-        if (i == CAUSE_SERVICE_DISCONNECTED) {
-            Toast.makeText(getActivity(), "Disconnected. Please re-connect.", Toast.LENGTH_SHORT).show();
-        } else if (i == CAUSE_NETWORK_LOST) {
-            Toast.makeText(getActivity(), "Network lost. Please re-connect.", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    /*
-     * Called by Location Services if the attempt to Location Services fails.
-     */
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        /*
-         * Google Play services can resolve some errors it detects. If the error
-         * has a resolution, try sending an Intent to start a Google Play
-         * services activity that can resolve error.
-         */
-        if (connectionResult.hasResolution()) {
-            try {
-                // Start an Activity that tries to resolve the error
-                connectionResult.startResolutionForResult(getActivity(),
-                        CONNECTION_FAILURE_RESOLUTION_REQUEST);
-            /*
-             * Thrown if Google Play services canceled the original
-             * PendingIntent
-             */
-            } catch (IntentSender.SendIntentException e) {
-                // Log the error
-                e.printStackTrace();
-            }
-        } else {
-            Toast.makeText(getActivity(),
-                    "Sorry. Location services not available to you", Toast.LENGTH_LONG).show();
+            grouponClient.getGroupons(latLng, 0, this);
         }
     }
 
@@ -395,7 +207,7 @@ public class DealMapFragment extends Fragment implements
         @Override
         public View getInfoContents(final Marker marker) {
             //Re-show InfoWindow if it already shown
-            if ( currentlyClickedMarker != null && currentlyClickedMarker.isInfoWindowShown() ) {
+            if (currentlyClickedMarker != null && currentlyClickedMarker.isInfoWindowShown() ) {
                 currentlyClickedMarker.hideInfoWindow();
                 currentlyClickedMarker.showInfoWindow();
             }
