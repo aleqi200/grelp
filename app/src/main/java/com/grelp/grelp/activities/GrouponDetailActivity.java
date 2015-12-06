@@ -218,7 +218,7 @@ public class GrouponDetailActivity extends AppCompatActivity {
                                 transaction.replace(R.id.fs_fragment, FourSquareDetailFragment.newInstance(fourSquareVenue));
                                 transaction.commit();
                             } catch (JSONException e) {
-                                Log.e(LOG_TAG, "Error while parsing json object:" + response, e);
+                                Log.e(LOG_TAG, "Error while parsing json object:", e);
                             }
                         }
 
@@ -228,7 +228,7 @@ public class GrouponDetailActivity extends AppCompatActivity {
                         }
                     });
                 } catch (JSONException e) {
-                    Log.e(LOG_TAG, "Error while parsing json object:" + response, e);
+                    Log.e(LOG_TAG, "Error while parsing json object", e);
                 }
             }
 

@@ -85,18 +85,21 @@ public class FourSquareVenue implements Parcelable {
     public static FourSquareVenue fromJSONObject(JSONObject venue) throws JSONException {
         String id = venue.getString("id");
         String name = venue.getString("name");
-        String fourSquareUrl = venue.getString("canonicalUrl");
-        int rating = venue.getInt("rating");
-        int ratingCount = venue.getInt("ratingSignals");
+        int rating = venue.optInt("rating", 0);
+        int ratingCount = venue.optInt("ratingSignals", 0);
         int likes = venue.getJSONObject("likes").getInt("count");
         List<FourSquareTip> tips = FourSquareTip.fromJSONArray(
                 venue.getJSONObject("tips").getJSONArray("groups"));
-        JSONArray phraseArray = venue.getJSONArray("phrases");
+        JSONArray phraseArray = venue.optJSONArray("phrases");
         List<String> phrases = new LinkedList<>();
-        for (int i = 0; i < phraseArray.length(); i++) {
-            JSONObject phraseObject = phraseArray.getJSONObject(i);
-            phrases.add(phraseObject.getString("phrase"));
+        if (phraseArray != null) {
+            for (int i = 0; i < phraseArray.length(); i++) {
+                JSONObject phraseObject = phraseArray.getJSONObject(i);
+                phrases.add(phraseObject.getString("phrase"));
+            }
         }
+        JSONObject photoObject = venue.getJSONObject("bestPhoto");
+        String fourSquareUrl = photoObject.getString("prefix") + "200x100" + photoObject.getString("suffix");
         FourSquareVenue fourSquareVenue = new FourSquareVenue(id, name, fourSquareUrl,
                 likes, rating, ratingCount, tips);
         return fourSquareVenue;
