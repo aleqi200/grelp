@@ -21,4 +21,5 @@
         <item quantity="one">%d review</item>
         <item quantity="other">%d reviews</item>
     </plurals>
+    <string name="title_activity_four_square">FourSquareActivity</string>
 </resources>

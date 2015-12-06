@@ -55,6 +55,14 @@ public class FourSquareClient {
         get(handler, apiUrl, params);
     }
 
+    public void getTipsForVenue(String id, AsyncHttpResponseHandler handler) {
+        String apiUrl = "https://api.foursquare.com/v2/venues/" + id + "/tips";
+        RequestParams params = new RequestParams();
+        params.add("v", "20151204");
+        params.add("oauth_token", ACCESS_TOKEN);
+        get(handler, apiUrl, params);
+    }
+
     public void get(AsyncHttpResponseHandler handler, String apiUrl, RequestParams params) {
         new AsyncHttpClient().get(apiUrl, params, handler);
     }
