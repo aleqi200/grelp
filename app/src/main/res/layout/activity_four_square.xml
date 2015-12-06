@@ -22,8 +22,9 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textSize="14sp"
-        android:textColor="@color/yellow"
+        android:textColor="@color/primary_light"
         android:id="@+id/tvRatingCount"
+        android:gravity="center_vertical|center_horizontal"
         android:background="@drawable/solid_border"
         android:layout_below="@+id/ivFourSquare"
         android:layout_centerHorizontal="true" />
