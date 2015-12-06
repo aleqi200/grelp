@@ -1,76 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:showIn="@layout/activity_groupon_detail"
-    tools:context=".activities.GrouponDetailActivity">
+    tools:context=".activities.GrouponDetailActivity"
+    tools:showIn="@layout/activity_groupon_detail">
 
-    <ScrollView
+
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <RelativeLayout
+        <ImageView
+            android:id="@+id/ivDetailedImage"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:transitionName="dealImage" />
+
+        <TextView
+            android:id="@+id/tvDetailedTitle"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:id="@+id/ivDetailedImage"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentStart="true" />
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/ivDetailedImage"
+            android:layout_marginEnd="25dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginStart="25dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:transitionName="dealTitle" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:id="@+id/tvDetailedTitle"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:layout_below="@+id/ivDetailedImage"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginLeft="25dp"
-                android:layout_marginStart="25dp"
-                android:layout_marginRight="25dp"
-                android:layout_marginEnd="25dp"/>
+        <LinearLayout
+            android:id="@+id/llDealOptions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvDetailedTitle"
+            android:layout_marginBottom="3dip"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical"></LinearLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/llDealOptions"
-                android:orientation="vertical"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="3dip"
-                android:layout_below="@+id/tvDetailedTitle">
-            </LinearLayout>
+        <ImageView
+            android:id="@+id/btnBuy"
+            android:layout_width="140dp"
+            android:layout_height="40dp"
+            android:layout_below="@+id/llDealOptions"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/ic_buy" />
 
-            <ImageView
-                android:layout_width="140dp"
-                android:layout_height="40dp"
-                android:src="@drawable/ic_buy"
-                android:id="@+id/btnBuy"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@+id/llDealOptions" />
+        <FrameLayout
+            android:id="@+id/yelp_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/btnBuy"
+            >
+        </FrameLayout>
 
-            <FrameLayout
-                android:layout_below="@+id/btnBuy"
-                android:id="@+id/yelp_fragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/grey_border"/>
-
-            <FrameLayout
-                android:layout_below="@+id/yelp_fragment"
-                android:id="@+id/fs_fragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/grey_border"/>
-        </RelativeLayout>
-    </ScrollView>
-
-</RelativeLayout>
+        <FrameLayout
+            android:id="@+id/fs_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/yelp_fragment"
+            />
+    </RelativeLayout>
+</ScrollView>

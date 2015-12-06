@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -63,8 +64,6 @@ public class GrouponDetailActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         groupon = getIntent().getParcelableExtra("groupon");
         toolbar.setTitle(groupon.getShortAnnouncementTitle());
-        toolbar.setLogo(R.mipmap.ic_launcher);
-        setSupportActionBar(toolbar);
         grouponClient = GrouponClient.getInstance();
         googlePlacesAPI = new GooglePlacesAPI(this);
         fourSquareClient = FourSquareClient.getInstance();

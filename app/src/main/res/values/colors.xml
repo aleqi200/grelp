@@ -7,9 +7,14 @@
     <color name="colorAccent">#FF4081</color>
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#727272</color>
+    <color name="green_text">#52A217</color>
     <color name="icons">#FFFFFF</color>
     <color name="divider">#B6B6B6</color>
     <color name="yelp_primary">#c41200</color>
     <color name="yelp_secondary">#af0606</color>
     <color name="card_background">#E6E6E6</color>
+
+    <color name="book_loading_background">#ffffff</color>
+    <color name="book_loading_book">#ff33b5e5</color>
+    <color name="book_loading_page">#ffffff</color>
 </resources>
