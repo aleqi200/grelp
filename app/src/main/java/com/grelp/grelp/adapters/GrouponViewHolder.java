@@ -1,8 +1,11 @@
 package com.grelp.grelp.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -60,6 +63,10 @@ public class GrouponViewHolder extends RecyclerView.ViewHolder implements View.O
     public void onClick(View view) {
         Intent grpnDetailIntent = new Intent(context, GrouponDetailActivity.class);
         grpnDetailIntent.putExtra("groupon", groupon);
-        context.startActivity(grpnDetailIntent);
+        Pair<View, String> p1 = Pair.create((View)ivDealImage, "dealImage");
+        Pair<View, String> p2 = Pair.create((View)tvTitle, "dealTitle");
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation((Activity) context, p1, p2);
+        context.startActivity(grpnDetailIntent, options.toBundle());
     }
 }

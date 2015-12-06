@@ -353,4 +353,20 @@ public class Groupon implements Parcelable {
             return new Groupon[size];
         }
     };
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Groupon groupon = (Groupon) o;
+
+        return !(uuid != null ? !uuid.equals(groupon.uuid) : groupon.uuid != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return uuid != null ? uuid.hashCode() : 0;
+    }
 }

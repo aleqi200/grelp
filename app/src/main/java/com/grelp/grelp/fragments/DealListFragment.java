@@ -1,6 +1,6 @@
 package com.grelp.grelp.fragments;
 
-import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.location.Location;
 import android.net.ConnectivityManager;
@@ -13,13 +13,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.grelp.grelp.R;
 import com.grelp.grelp.adapters.GrouponArrayAdapter;
+import com.grelp.grelp.data.GrouponClient;
 import com.grelp.grelp.listeners.EndlessRecyclerOnScrollListener;
 import com.grelp.grelp.models.Groupon;
-import com.grelp.grelp.data.GrouponClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -29,6 +30,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import dmax.dialog.SpotsDialog;
 
 public class DealListFragment extends Fragment {
     private static final String LOG_TAG = "DealList";
@@ -83,6 +86,7 @@ public class DealListFragment extends Fragment {
                 return true;
             }
         });
+
         groupons = getArguments().getParcelableArrayList("groupons");
         if (groupons != null && !groupons.isEmpty()) {
             grouponAdapter.addAll(groupons);
@@ -98,8 +102,11 @@ public class DealListFragment extends Fragment {
             Toast.makeText(getContext(), "Network not available", Toast.LENGTH_LONG).show();
             return;
         }
-
-
+        if (offset == 0 && (groupons != null && !groupons.isEmpty())) {
+            return;
+        }
+        final AlertDialog dialog = new SpotsDialog(getContext());
+        dialog.show();
         grouponClient.getDeals(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -113,6 +120,7 @@ public class DealListFragment extends Fragment {
                     }
                     grouponAdapter.addAll(groupons);
                     grouponAdapter.notifyDataSetChanged();
+                    dialog.dismiss();
                 } catch (JSONException e) {
                     Log.e(LOG_TAG, "Error while parsing json object: " + response, e);
                 }
