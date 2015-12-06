@@ -1,5 +1,6 @@
 package com.grelp.grelp.fragments;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.location.Location;
 import android.net.ConnectivityManager;
@@ -21,7 +22,6 @@ import com.grelp.grelp.data.GrouponClient;
 import com.grelp.grelp.listeners.EndlessRecyclerOnScrollListener;
 import com.grelp.grelp.models.Groupon;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.victor.loading.book.BookLoading;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -30,6 +30,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import dmax.dialog.SpotsDialog;
 
 public class DealListFragment extends Fragment {
     private static final String LOG_TAG = "DealList";
@@ -41,7 +43,6 @@ public class DealListFragment extends Fragment {
     private LinearLayoutManager mLayoutManager;
     private List<Groupon> groupons;
     private List<OnItemsAdded> callbacks = new ArrayList<>();
-    private BookLoading progressBar;
 
 
     public static DealListFragment newInstance(Location location, ArrayList<Groupon> groupons) {
@@ -85,8 +86,7 @@ public class DealListFragment extends Fragment {
                 return true;
             }
         });
-        progressBar = (BookLoading) v.findViewById(R.id.progressBar);
-        progressBar.setVisibility(View.INVISIBLE);
+
         groupons = getArguments().getParcelableArrayList("groupons");
         if (groupons != null && !groupons.isEmpty()) {
             grouponAdapter.addAll(groupons);
@@ -105,10 +105,8 @@ public class DealListFragment extends Fragment {
         if (offset == 0 && (groupons != null && !groupons.isEmpty())) {
             return;
         }
-        if (progressBar != null) {
-            progressBar.setVisibility(View.VISIBLE);
-            progressBar.start();
-        }
+        final AlertDialog dialog = new SpotsDialog(getContext());
+        dialog.show();
         grouponClient.getDeals(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -122,10 +120,7 @@ public class DealListFragment extends Fragment {
                     }
                     grouponAdapter.addAll(groupons);
                     grouponAdapter.notifyDataSetChanged();
-                    if (progressBar != null) {
-                        progressBar.stop();
-                        progressBar.setVisibility(View.INVISIBLE);
-                    }
+                    dialog.dismiss();
                 } catch (JSONException e) {
                     Log.e(LOG_TAG, "Error while parsing json object: " + response, e);
                 }
