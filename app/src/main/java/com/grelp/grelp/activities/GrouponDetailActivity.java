@@ -261,4 +261,10 @@ public class GrouponDetailActivity extends AppCompatActivity {
         }
         return Pair.create(lat, lng);
     }
+
+    public void getTips(View view) {
+        Intent fourSquareIntent = new Intent(this, FourSquareActivity.class);
+        fourSquareIntent.putExtra("venue", fourSquareVenue);
+        startActivity(fourSquareIntent);
+    }
 }

@@ -89,7 +89,8 @@ public class FourSquareVenue implements Parcelable {
         int rating = venue.getInt("rating");
         int ratingCount = venue.getInt("ratingSignals");
         int likes = venue.getJSONObject("likes").getInt("count");
-        List<FourSquareTip> tips = FourSquareTip.fromJSONObject(venue.getJSONObject("tips"));
+        List<FourSquareTip> tips = FourSquareTip.fromJSONArray(
+                venue.getJSONObject("tips").getJSONArray("groups"));
         JSONArray phraseArray = venue.getJSONArray("phrases");
         List<String> phrases = new LinkedList<>();
         for (int i = 0; i < phraseArray.length(); i++) {
@@ -125,7 +126,7 @@ public class FourSquareVenue implements Parcelable {
         this.likes = in.readInt();
         this.rating = in.readInt();
         this.ratingCount = in.readInt();
-        in.readTypedList(tips, FourSquareTip.CREATOR);
+        this.tips = in.createTypedArrayList(FourSquareTip.CREATOR);
     }
 
     public static final Creator<FourSquareVenue> CREATOR = new Creator<FourSquareVenue>() {

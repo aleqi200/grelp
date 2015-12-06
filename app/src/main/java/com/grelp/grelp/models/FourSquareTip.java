@@ -14,13 +14,15 @@ public class FourSquareTip implements Parcelable {
     private String text;
     private long timestamp;
     private int likes;
+    private String userName;
     private String photoUrl;
 
-    public FourSquareTip(String text, long timestamp, int likes, String photoUrl) {
+    public FourSquareTip(String text, long timestamp, int likes, String photoUrl, String userName) {
         this.text = text;
         this.timestamp = timestamp;
         this.likes = likes;
         this.photoUrl = photoUrl;
+        this.userName = userName;
     }
 
     public String getText() {
@@ -55,28 +57,44 @@ public class FourSquareTip implements Parcelable {
         this.photoUrl = photoUrl;
     }
 
-    public static List<FourSquareTip> fromJSONObject(JSONObject tipObject) throws JSONException {
-        JSONArray groups = tipObject.getJSONArray("groups");
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public static List<FourSquareTip> fromJSONArray(JSONArray tipArray) throws JSONException {
         List<FourSquareTip> tips = new LinkedList<>();
-        for (int i = 0; i < groups.length(); i++) {
-            JSONObject group = groups.getJSONObject(i);
-            JSONArray items = group.getJSONArray("items");
-            for (int j = 0; j < items.length(); j++) {
-                JSONObject item = items.getJSONObject(i);
-                long timestamp = item.getLong("createdAt");
-                String text = item.getString("text");
-                int likes = item.getJSONObject("likes").getInt("count");
-                JSONObject photo = item.getJSONObject("user").getJSONObject("photo");
-                String photoUrl = null;
-                if (photo != null) {
-                    //Foursquare URLs need to be constructed from the prefix and suffix and come
-                    //in two dimensions (30x30 or 110x110) which also needs to be added to the URI
-                    //to retrieve the final photo
-                    photoUrl = photo.getString("prefix") + "30x30" + photo.getString("suffix");
-                }
-                FourSquareTip tip = new FourSquareTip(text, timestamp, likes, photoUrl);
-                tips.add(tip);
+        for (int i = 0; i < tipArray.length(); i++) {
+            JSONObject group = tipArray.getJSONObject(i);
+            tips.addAll(fromJSONObject(group));
+        }
+        return tips;
+    }
+
+    public static List<FourSquareTip> fromJSONObject(JSONObject tipObject) throws JSONException {
+        List<FourSquareTip> tips = new LinkedList<>();
+        JSONArray items = tipObject.getJSONArray("items");
+        for (int j = 0; j < items.length(); j++) {
+            JSONObject item = items.getJSONObject(j);
+            long timestamp = item.getLong("createdAt");
+            String text = item.getString("text");
+            int likes = item.getJSONObject("likes").getInt("count");
+            JSONObject user = item.getJSONObject("user");
+            JSONObject photo = user.getJSONObject("photo");
+            String userName = user.getString("firstName") + " " + user.getString("lastName");
+            String photoUrl = null;
+            if (photo != null) {
+                //Foursquare URLs need to be constructed from the prefix and suffix and come
+                //in two dimensions (30x30 or 110x110) which also needs to be added to the URI
+                //to retrieve the final photo
+                photoUrl = photo.getString("prefix") + "30x30" + photo.getString("suffix");
             }
+            FourSquareTip tip = new FourSquareTip(text, timestamp, likes, photoUrl,
+                    userName);
+            tips.add(tip);
         }
         return tips;
     }
@@ -93,6 +111,7 @@ public class FourSquareTip implements Parcelable {
         dest.writeLong(this.timestamp);
         dest.writeInt(this.likes);
         dest.writeString(this.photoUrl);
+        dest.writeString(this.userName);
     }
 
     private FourSquareTip(Parcel in) {
@@ -100,6 +119,7 @@ public class FourSquareTip implements Parcelable {
         this.timestamp = in.readLong();
         this.likes = in.readInt();
         this.photoUrl = in.readString();
+        this.userName = in.readString();
     }
 
     public static final Creator<FourSquareTip> CREATOR = new Creator<FourSquareTip>() {
