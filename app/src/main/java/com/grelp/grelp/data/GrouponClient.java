@@ -29,7 +29,7 @@ public class GrouponClient {
     private static final String DEALS_SEARCH_CONTEXT = "mobile_local";
     private static final String GAPI_CLIENT_ID = "44aa9e633a98fd614f0e7f495e3e6442";
     private static final String CONSUMER_ID = "5b2a214e-5c83-11e3-bbd1-0025906127f6";
-    private static final String MAX_RESULTS = "50";
+    private static final String MAX_RESULTS = "20";
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:DDZ");
 
     private static GrouponClient client;
@@ -69,7 +69,7 @@ public class GrouponClient {
         } else {
             requestParams.add("filter", "division:san-francisco");
         }
-        requestParams.add("max_results", MAX_RESULTS);
+        requestParams.add("limit", MAX_RESULTS);
         requestParams.add("filter_start_time", dateTime);
         requestParams.add("filter_end_time", dateTime);
         requestParams.add("show", "default,locations");

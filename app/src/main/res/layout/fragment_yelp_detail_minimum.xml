@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
+
+    <View
+        android:layout_width="match_parent"
+        android:padding="2dp"
+        android:layout_height="2dp"
+        android:background="?android:attr/listDivider" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/imgVYelpLogo"
+            android:src="@mipmap/ic_yelp_icon"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:paddingLeft="6dp"
+            android:paddingStart="6dp"
+            android:paddingEnd="6dp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/yelp"
+            android:id="@+id/tvYelpText"
+            android:layout_toRightOf="@+id/imgVYelpLogo"
+            android:paddingLeft="1dp"
+            android:paddingStart="1dp"
+            android:paddingEnd="1dp"
+            android:paddingTop="6dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/yelp_ratings"
+            android:id="@+id/tvYelpRatingsText"
+            android:layout_below="@+id/tvYelpText"
+            android:layout_toRightOf="@+id/profileHolder"
+            android:layout_toEndOf="@+id/profileHolder"
+            android:paddingTop="10dp"
+            android:paddingBottom="15dp"
+            android:padding="3dp"/>
+
+        <ImageView
+            android:layout_width="120dp"
+            android:layout_height="30dp"
+            android:scaleType="fitXY"
+            android:id="@+id/imgYelpRating"
+            android:background="?android:attr/selectableItemBackground"
+            android:src="@mipmap/ic_rating"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:padding="3dp"
+            android:layout_below="@+id/tvYelpRatingsText"
+            android:layout_toRightOf="@+id/tvYelpText"
+            android:layout_toEndOf="@+id/tvYelpText" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="(140)"
+            android:id="@+id/tvNumberOfReviews"
+            android:background="?android:attr/selectableItemBackground"
+            android:paddingTop="4dp"
+            android:padding="2dp"
+            android:layout_alignTop="@+id/imgYelpRating"
+            android:layout_toRightOf="@+id/imgYelpRating"
+            android:layout_toEndOf="@+id/imgYelpRating"
+            android:paddingBottom="20dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:id="@+id/divider_review"
+            android:paddingTop="30dp"
+            android:layout_marginTop="20dp"
+            android:background="?android:attr/listDivider"
+            android:layout_below="@+id/tvNumberOfReviews"
+            android:layout_toRightOf="@+id/tvYelpText"
+            android:layout_toEndOf="@+id/tvYelpText"
+            android:paddingBottom="10dp" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignRight="@+id/tvYelpText"
+            android:layout_alignEnd="@+id/tvYelpText"
+            android:id="@+id/profileHolder"
+            android:layout_below="@+id/divider_review">
+            <com.makeramen.roundedimageview.RoundedImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:scaleType="fitCenter"
+                app:riv_corner_radius="30dip"
+                app:riv_mutate_background="true"
+                app:riv_tile_mode="clamp"
+                app:riv_oval="true"
+                android:id="@+id/ivYelpProfile"
+                android:src="@mipmap/ic_groupon_round_logo"
+                android:padding="2dp" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/open_yelp"
+            android:textColor="@color/green_text"
+            android:textStyle="bold"
+            android:id="@+id/tvOpenYelp"
+            android:layout_above="@+id/tvNumberOfReviews"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="15dp"
+            android:layout_marginEnd="15dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Reviewer"
+            android:textSize="14sp"
+            android:id="@+id/tvYelpUserName"
+            android:paddingTop="15dp"
+            android:layout_below="@+id/divider_review"
+            android:layout_toRightOf="@+id/tvYelpText"
+            android:layout_toEndOf="@+id/tvYelpText" />
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="25dp"
+            android:id="@+id/ivRating"
+            android:src="@mipmap/ic_rating"
+            android:layout_below="@+id/tvYelpUserName"
+            android:layout_alignLeft="@+id/tvYelpUserName"
+            android:layout_alignStart="@+id/tvYelpUserName" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="The place is bla bla and tra la la"
+            android:textStyle="bold"
+            android:id="@+id/tvReviewText"
+            android:paddingTop="5dp"
+            android:paddingBottom="15dp"
+            android:layout_below="@+id/ivRating"
+            android:layout_toRightOf="@+id/tvYelpText"
+            android:layout_toEndOf="@+id/tvYelpText" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:padding="2dp"
+            android:id="@+id/divider_reviewer"
+            android:background="?android:attr/listDivider"
+            android:layout_below="@+id/tvReviewText"
+            android:layout_toRightOf="@+id/tvYelpText"
+            android:layout_toEndOf="@+id/tvYelpText" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Tags"
+            android:textSize="14sp"
+            android:id="@+id/tvTagsName"
+            android:paddingTop="15dp"
+            android:layout_below="@+id/divider_reviewer"
+            android:layout_toRightOf="@+id/tvYelpText"
+            android:layout_toEndOf="@+id/tvYelpText"
+            android:paddingBottom="15dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Category"
+            android:id="@+id/tvCategory"
+            android:textStyle="bold"
+            android:layout_below="@+id/tvTagsName"
+            android:layout_toRightOf="@+id/tvYelpText"
+            android:layout_toEndOf="@+id/tvYelpText"
+            android:padding="2dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="15dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:padding="2dp"
+            android:layout_marginTop="10dp"
+            android:layout_height="2dp"
+            android:layout_below="@+id/tvCategory"
+            android:background="?android:attr/listDivider" />
+
+    </RelativeLayout>
+
+
+</LinearLayout>

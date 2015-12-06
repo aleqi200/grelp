@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this).build();
 
-        connectClient();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setLogo(R.mipmap.ic_launcher);
@@ -74,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements
         if(!checkPermission()) {
             requestPermission();
         }
+        connectClient();
 
         showDealList();
     }

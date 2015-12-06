@@ -16,10 +16,14 @@
     <string name="show_map">Show Map</string>
     <string name="fs_title">Four Square</string>
     <string name="fs_tip_message">What you need to know</string>
+    <string name="num_reviews_parenthesis">(%d)</string>
     <plurals name="number_of_reviews">
         <item quantity="zero">No reviews</item>
         <item quantity="one">%d review</item>
         <item quantity="other">%d reviews</item>
     </plurals>
     <string name="title_activity_four_square">FourSquareActivity</string>
+    <string name="yelp">Yelp</string>
+    <string name="yelp_ratings">Yelp Reviews</string>
+    <string name="open_yelp"><![CDATA[Open Yelp >]]></string>
 </resources>
