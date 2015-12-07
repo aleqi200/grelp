@@ -26,9 +26,13 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.grelp.grelp.R;
 import com.grelp.grelp.fragments.DealListFragment;
@@ -46,13 +50,15 @@ public class MainActivity extends AppCompatActivity implements
     private static final int PERMISSION_REQUEST_CODE = 1;
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
+    private LocationRequest mLocationRequest;
+
     private DealListFragment dealListFragment;
     private DealMapFragment dealMapFragment;
 
     private GoogleApiClient mGoogleApiClient;
-    private static final long UPDATE_INTERVAL = 60000 * 60;  /* 60 secs */
+    private static final long UPDATE_INTERVAL = 1000 * 30;  /* 30 secs */
     private static final long FASTEST_INTERVAL = 5000; /* 5 secs */
-    private static final long MIN_DISTANCE = 1000; /* 1km */
+    private static final long MIN_DISTANCE = 200; /* 200m */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,9 +66,10 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this).build();
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
 
         connectClient();
 
@@ -109,6 +116,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private boolean checkPermission() {
+        Log.d(LOG_TAG, "Checking location permission...");
         int result = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
         if (result == PackageManager.PERMISSION_GRANTED) {
             return true;
@@ -118,11 +126,13 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void requestPermission() {
+        Log.d(LOG_TAG, "Requesting location permission...");
         if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)) {
             Log.d(LOG_TAG, "GPS permission allows us to access location data. " +
                     "Please allow in App Settings for additional functionality.");
         } else {
+            Log.d(LOG_TAG, "Requesting location permission 2...");
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
         }
@@ -142,8 +152,10 @@ public class MainActivity extends AppCompatActivity implements
 
         if(mGoogleApiClient.isConnected()) {
             Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-            dealListFragment.setLocation(latLng);
+            if(location != null) {
+                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                dealListFragment.setLocation(latLng);
+            }
         }
     }
 
@@ -160,8 +172,10 @@ public class MainActivity extends AppCompatActivity implements
 
         if(mGoogleApiClient.isConnected()) {
             Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-            dealMapFragment.updateLocation(latLng);
+            if(location != null) {
+                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                dealMapFragment.updateLocation(latLng);
+            }
         }
     }
 
@@ -200,11 +214,13 @@ public class MainActivity extends AppCompatActivity implements
     */
     @Override
     public void onStart() {
+        Log.d(LOG_TAG, "onStart");
         super.onStart();
         connectClient();
     }
 
     public void onStop() {
+        Log.d(LOG_TAG, "onStop");
         // Disconnecting the client invalidates it.
         if (mGoogleApiClient != null) {
             mGoogleApiClient.disconnect();
@@ -247,29 +263,33 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onConnected(Bundle dataBundle) {
         // Display the connection status
+        //LocationServices.FusedLocationApi.flushLocations(mGoogleApiClient);
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-
-        if(dealMapFragment != null && dealMapFragment.getActivity() != null) {
-            dealMapFragment.updateLocation(latLng);
-        }
-        if(dealListFragment != null && dealListFragment.getActivity() != null) {
-            dealListFragment.setLocation(latLng);
-        }
 
         if (location != null) {
+            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+            if(dealMapFragment != null && dealMapFragment.getActivity() != null) {
+                dealMapFragment.updateLocation(latLng);
+            }
+            if(dealListFragment != null && dealListFragment.getActivity() != null) {
+                dealListFragment.setLocation(latLng);
+            }
+
             Toast.makeText(this, "GPS location was found!", Toast.LENGTH_SHORT).show();
 
-            startLocationUpdates();
         } else {
             Toast.makeText(this, "Current location was null, enable GPS on emulator!",
                     Toast.LENGTH_SHORT).show();
         }
+
+        startLocationUpdates();
     }
 
     protected void startLocationUpdates() {
-        LocationRequest mLocationRequest = new LocationRequest();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        Log.d(LOG_TAG, "Starting location updates");
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setInterval(UPDATE_INTERVAL);
         mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
         mLocationRequest.setSmallestDisplacement(MIN_DISTANCE);
@@ -282,6 +302,15 @@ public class MainActivity extends AppCompatActivity implements
                 Double.toString(location.getLatitude()) + "," +
                 Double.toString(location.getLongitude());
         Log.d(LOG_TAG, msg);
+
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+        if(dealMapFragment != null && dealMapFragment.getActivity() != null) {
+            dealMapFragment.updateLocation(latLng);
+        }
+        if(dealListFragment != null && dealListFragment.getActivity() != null) {
+            dealListFragment.setLocation(latLng);
+        }
     }
 
     /*
