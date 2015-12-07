@@ -99,7 +99,7 @@ public class GrouponViewHolder extends RecyclerView.ViewHolder implements View.O
 
                         @Override
                         public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                            Log.e(LOG_TAG, "Error getting Yelp business: " + errorResponse.toString(), throwable);
+                            Log.e(LOG_TAG, "Error getting Yelp business: " + (errorResponse == null ? null : errorResponse.toString()), throwable);
                         }
                     }
             );
