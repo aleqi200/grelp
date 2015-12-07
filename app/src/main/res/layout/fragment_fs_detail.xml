@@ -1,74 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="10dp"
-    android:onClick="getTips">
+    android:layout_alignParentEnd="true"
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentRight="true"
+    android:layout_alignParentStart="true"
+    android:layout_marginBottom="10dp"
+    android:background="?android:attr/selectableItemBackground"
+    card_view:cardUseCompatPadding="true">
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="10dp"
+        android:onClick="getTips">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/fs_logo"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="25dp"
-        android:id="@+id/ivFourSquareLogo" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/fs_logo"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="25dp"
+            android:id="@+id/ivFourSquareLogo" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/fs_title"
-        android:textSize="12sp"
-        android:id="@+id/tvFourSquare"
-        android:gravity="center"
-        android:layout_marginTop="20dp"
-        android:layout_toRightOf="@+id/ivFourSquareLogo"
-        android:layout_toEndOf="@+id/ivFourSquareLogo" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/fs_title"
+            android:textSize="12sp"
+            android:id="@+id/tvFourSquare"
+            android:gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_toRightOf="@+id/ivFourSquareLogo"
+            android:layout_toEndOf="@+id/ivFourSquareLogo" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="@color/colorPrimary"
-        android:textSize="12sp"
-        android:id="@+id/tvRatingCount"
-        android:background="@drawable/green_border"
-        android:layout_marginRight="50dp"
-        android:layout_alignBottom="@+id/tvFourSquare"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/colorPrimary"
+            android:textSize="12sp"
+            android:id="@+id/tvRatingCount"
+            android:background="@drawable/green_border"
+            android:layout_marginRight="50dp"
+            android:layout_alignBottom="@+id/tvFourSquare"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Small Text"
-        android:textSize="6sp"
-        android:id="@+id/tvFourSquareRatings"
-        android:layout_below="@+id/tvRatingCount"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="30dp">
-    </TextView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Small Text"
+            android:textSize="6sp"
+            android:id="@+id/tvFourSquareRatings"
+            android:layout_below="@+id/tvRatingCount"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="30dp">
+        </TextView>
 
-    <ImageView
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:paddingRight="5dp"
-        android:id="@+id/ivFourSquareProfile"
-        android:layout_marginTop="10dp"
-        android:layout_below="@+id/ivFourSquareLogo"
-        android:layout_alignLeft="@+id/ivFourSquareLogo"
-        android:layout_alignStart="@+id/ivFourSquareLogo" />
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:paddingRight="5dp"
+            android:id="@+id/ivFourSquareProfile"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/ivFourSquareLogo"
+            android:layout_alignLeft="@+id/ivFourSquareLogo"
+            android:layout_alignStart="@+id/ivFourSquareLogo" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textSize="10sp"
-        android:id="@+id/tvFourSquareTip"
-        android:layout_marginTop="10dp"
-        android:layout_below="@+id/ivFourSquareLogo"
-        android:layout_toRightOf="@+id/ivFourSquareProfile"
-        android:layout_toEndOf="@+id/ivFourSquareProfile" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="10sp"
+            android:id="@+id/tvFourSquareTip"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/ivFourSquareLogo"
+            android:layout_toRightOf="@+id/ivFourSquareProfile"
+            android:layout_toEndOf="@+id/ivFourSquareProfile" />
 
-</RelativeLayout>
+    </RelativeLayout>
+</android.support.v7.widget.CardView>
