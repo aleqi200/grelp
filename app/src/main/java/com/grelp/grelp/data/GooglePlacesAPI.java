@@ -68,7 +68,6 @@ public class GooglePlacesAPI implements
             public void onResult(AutocompletePredictionBuffer autocompletePredictions) {
                 if(autocompletePredictions.getStatus().isSuccess() && autocompletePredictions.getCount() > 0) {
                     String placeId = autocompletePredictions.get(0).getPlaceId();
-                    autocompletePredictions.release();
 
                     PendingResult<PlaceBuffer> placeBufferPendingResult = Places.GeoDataApi.getPlaceById(mGoogleApiClient, placeId);
 
@@ -97,6 +96,7 @@ public class GooglePlacesAPI implements
                     }
                     placeListener.foundPlace(null);
                 }
+                autocompletePredictions.release();
             }
         });
     }
