@@ -74,13 +74,12 @@ public class GooglePlacesAPI implements
                     placeBufferPendingResult.setResultCallback(new ResultCallback<PlaceBuffer>() {
                         @Override
                         public void onResult(PlaceBuffer places) {
-                            if(places.getStatus().isSuccess()) {
+                            if(places.getStatus().isSuccess() && places.getCount() > 0) {
                                 Place place = places.get(0);
-                                Log.d("GOOGLE_PLACES_API", "Found place: " + place);
                                 placeListener.foundPlace(place);
                             } else {
                                 if(debug) {
-                                    Toast.makeText(mContext, "failed to get place: " +
+                                    Toast.makeText(mContext, "Failed to get place: " +
                                             places.getStatus().getStatusMessage(), Toast.LENGTH_SHORT).show();
                                 }
                                 placeListener.foundPlace(null);
@@ -91,7 +90,7 @@ public class GooglePlacesAPI implements
                     });
                 } else {
                     if(debug) {
-                        Toast.makeText(mContext, "failed to get autocomplete predictions: " +
+                        Toast.makeText(mContext, "Failed to get autocomplete predictions: " +
                                 autocompletePredictions.getStatus().getStatusMessage(), Toast.LENGTH_SHORT).show();
                     }
                     placeListener.foundPlace(null);

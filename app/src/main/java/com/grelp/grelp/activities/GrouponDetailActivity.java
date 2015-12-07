@@ -26,12 +26,14 @@ import com.grelp.grelp.data.FourSquareClient;
 import com.grelp.grelp.data.GrouponClient;
 import com.grelp.grelp.data.YelpAPI;
 import com.grelp.grelp.fragments.FourSquareDetailFragment;
+import com.grelp.grelp.fragments.GooglePlacesFragment;
 import com.grelp.grelp.fragments.YelpDetailFragment;
 import com.grelp.grelp.fragments.YelpDetailFragmentMinimum;
 import com.grelp.grelp.models.FourSquareVenue;
 import com.grelp.grelp.models.Groupon;
 import com.grelp.grelp.models.GrouponMerchant;
 import com.grelp.grelp.models.GrouponOption;
+import com.grelp.grelp.models.ParcelablePlace;
 import com.grelp.grelp.models.RedemptionLocation;
 import com.grelp.grelp.models.YelpBusiness;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -59,6 +61,8 @@ public class GrouponDetailActivity extends AppCompatActivity {
     private TextView tvDetailedTitle;
     private LinearLayout llDealOptions;
     private ImageView btnBuy;
+
+    private ParcelablePlace place;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,7 +153,14 @@ public class GrouponDetailActivity extends AppCompatActivity {
             @Override
             public void foundPlace(Place place) {
                 if (place != null) {
-                    Log.d("GOOGLE_PLACES_API", "Got place: " + place.getName());
+                    Log.d("GOOGLE_PLACES_API", "Got place: " + place.getName() + ", rating: " + place.getRating());
+                    GrouponDetailActivity.this.place = new ParcelablePlace(place);
+
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    FragmentTransaction transaction = fragmentManager.beginTransaction();
+                    transaction.setCustomAnimations(R.anim.animation_fade_in, R.anim.animation_fade_out);
+                    transaction.replace(R.id.places_fragment, GooglePlacesFragment.newInstance(place));
+                    transaction.commit();
                 } else {
                     Log.d("GOOGLE_PLACES_API", "Failed to find place via google: " + merchant.getName());
                 }
@@ -285,5 +296,12 @@ public class GrouponDetailActivity extends AppCompatActivity {
         Intent fourSquareIntent = new Intent(this, FourSquareActivity.class);
         fourSquareIntent.putExtra("venue", fourSquareVenue);
         startActivity(fourSquareIntent);
+    }
+
+    public void onClickOpenGoogle(View view) {
+        Uri gmmIntentUri = Uri.parse("geo:" + place.latLng.latitude + "," + place.latLng.longitude + "?q=" + place.name);
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        startActivity(mapIntent);
     }
 }
