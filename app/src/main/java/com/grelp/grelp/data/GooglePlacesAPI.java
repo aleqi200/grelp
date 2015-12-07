@@ -66,7 +66,7 @@ public class GooglePlacesAPI implements
         result.setResultCallback(new ResultCallback<AutocompletePredictionBuffer>() {
             @Override
             public void onResult(AutocompletePredictionBuffer autocompletePredictions) {
-                if(autocompletePredictions.getStatus().isSuccess()) {
+                if(autocompletePredictions.getStatus().isSuccess() && autocompletePredictions.getCount() > 0) {
                     String placeId = autocompletePredictions.get(0).getPlaceId();
                     autocompletePredictions.release();
 
