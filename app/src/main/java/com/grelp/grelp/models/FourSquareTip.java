@@ -84,7 +84,7 @@ public class FourSquareTip implements Parcelable {
             int likes = item.getJSONObject("likes").getInt("count");
             JSONObject user = item.getJSONObject("user");
             JSONObject photo = user.getJSONObject("photo");
-            String userName = user.getString("firstName") + " " + user.getString("lastName");
+            String userName = user.getString("firstName") + " " + user.optString("lastName", "");
             String photoUrl = null;
             if (photo != null) {
                 //Foursquare URLs need to be constructed from the prefix and suffix and come

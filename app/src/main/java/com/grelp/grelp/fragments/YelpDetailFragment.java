@@ -3,6 +3,7 @@ package com.grelp.grelp.fragments;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,7 +20,9 @@ import com.grelp.grelp.R;
 import com.grelp.grelp.models.YelpBusiness;
 import com.grelp.grelp.models.YelpReview;
 import com.grelp.grelp.util.StringUtil;
+import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 
 public class YelpDetailFragment extends Fragment {
 
@@ -96,7 +99,20 @@ public class YelpDetailFragment extends Fragment {
             if (yelp.getYelpReviewList() != null && !yelp.getYelpReviewList().isEmpty()) {
                 Log.d("yelp review count", String.valueOf(yelp.getYelpReviewList().size()));
                 YelpReview review = yelp.getYelpReviewList().get(0);
-                Picasso.with(getContext()).load(review.getUser().getProfileUrl()).into(ivYelpProfile);
+
+                //Applying rounded transformation to yelp profile image
+                Transformation transformation = new RoundedTransformationBuilder()
+                        .borderColor(Color.WHITE)
+                        .borderWidthDp(0)
+                        .cornerRadiusDp(50)
+                        .oval(false)
+                        .build();
+
+                Picasso.with(getContext())
+                        .load(review.getUser().getProfileUrl())
+                        .fit()
+                        .transform(transformation)
+                        .into(ivYelpProfile);
                 Picasso.with(getContext()).load(review.getRatingImageUrl()).into(ivRating);
                 tvYelpUserName.setText(review.getUser().getName());
                 tvReviewTimestamp.setText(review.getTimeCreated());

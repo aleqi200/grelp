@@ -15,6 +15,7 @@ import com.grelp.grelp.data.FourSquareClient;
 import com.grelp.grelp.models.FourSquareTip;
 import com.grelp.grelp.models.FourSquareVenue;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.squareup.picasso.Picasso;
 
 import org.apache.http.Header;
 import org.json.JSONException;
@@ -55,7 +56,7 @@ public class FourSquareActivity extends AppCompatActivity {
 
         tvRatingCount.setText(venue.getRating());
         tvFourSquareRatings.setText(venue.getRatingCount());
-        //Picasso.with(this).load(venue.getFourSquareUrl()).into(ivFourSquare);
+        Picasso.with(this).load(venue.getFourSquareUrl()).into(ivFourSquare);
     }
 
     @Override

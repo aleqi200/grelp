@@ -3,21 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:id="@+id/ivTipImage"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textSize="14sp"
+        android:textSize="12sp"
         android:id="@+id/tvTipText"
-        android:layout_below="@+id/ivTipImage"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -33,10 +24,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textSize="8sp"
+        android:textSize="10sp"
         android:id="@+id/tvTipProfile"
+        android:layout_marginLeft="10dp"
         android:layout_alignTop="@+id/ivTipProfileImage"
         android:layout_toRightOf="@+id/ivTipProfileImage"
         android:layout_toEndOf="@+id/ivTipProfileImage" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/tvTipTimestamp"
+        android:textSize="10sp"
+        android:layout_marginRight="10dp"
+        android:layout_alignTop="@+id/tvTipProfile"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

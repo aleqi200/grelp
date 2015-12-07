@@ -41,4 +41,7 @@ dependencies {
 
     //Foursquare API
     compile 'com.foursquare:foursquare-android-oauth:1.0.3'
+
+    //Rounded Image View
+    compile 'com.makeramen:roundedimageview:2.2.1'
 }
