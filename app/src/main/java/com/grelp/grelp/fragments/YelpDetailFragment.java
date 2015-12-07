@@ -47,7 +47,7 @@ public class YelpDetailFragment extends Fragment {
         businessImg = (ImageView) view.findViewById(R.id.imgVBusinessImg);
         ratingImg = (ImageView) view.findViewById(R.id.imgYelpRating);
         numberOfReviews = (TextView) view.findViewById(R.id.tvNumberOfReviews);
-        businessTitle = (TextView) view.findViewById(R.id.tvBusinessName);
+        businessTitle = (TextView) view.findViewById(R.id.tvYelpText);
         category = (TextView) view.findViewById(R.id.tvCategory);
         phoneNumber = (TextView) view.findViewById(R.id.tvPhoneNumber);
         ivYelpProfile = (ImageView) view.findViewById(R.id.ivYelpProfile);

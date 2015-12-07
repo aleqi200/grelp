@@ -71,7 +71,6 @@ public class MainActivity extends AppCompatActivity implements
                 .addApi(LocationServices.API)
                 .build();
 
-        connectClient();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setLogo(R.mipmap.ic_launcher);
@@ -81,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements
         if(!checkPermission()) {
             requestPermission();
         }
+        connectClient();
 
         showDealList();
     }

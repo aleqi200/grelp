@@ -25,6 +25,7 @@ import com.grelp.grelp.data.GrouponClient;
 import com.grelp.grelp.data.YelpAPI;
 import com.grelp.grelp.fragments.FourSquareDetailFragment;
 import com.grelp.grelp.fragments.YelpDetailFragment;
+import com.grelp.grelp.fragments.YelpDetailFragmentMinimum;
 import com.grelp.grelp.models.FourSquareVenue;
 import com.grelp.grelp.models.Groupon;
 import com.grelp.grelp.models.GrouponMerchant;
@@ -177,11 +178,11 @@ public class GrouponDetailActivity extends AppCompatActivity {
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     FragmentTransaction transaction = fragmentManager.beginTransaction();
                     transaction.setCustomAnimations(R.anim.animation_fade_in, R.anim.animation_fade_out);
-                    transaction.replace(R.id.yelp_fragment, YelpDetailFragment.newInstance(business));
+                    transaction.replace(R.id.yelp_fragment, YelpDetailFragmentMinimum.newInstance(business));
                     transaction.commit();
 
                 } catch (JSONException e) {
-                    Log.e(LOG_TAG, "Error while parsing json object: " + response, e);
+                    Log.e(LOG_TAG, "Error while parsing json object: " + e.getMessage(), e);
                 }
             }
 

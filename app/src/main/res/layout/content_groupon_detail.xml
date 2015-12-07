@@ -56,6 +56,12 @@
             android:layout_centerHorizontal="true"
             android:src="@drawable/ic_buy" />
 
+        <View
+            android:layout_width="match_parent"
+            android:padding="2dp"
+            android:layout_height="2dp"
+            android:background="?android:attr/listDivider" />
+
         <FrameLayout
             android:id="@+id/yelp_fragment"
             android:layout_width="match_parent"
