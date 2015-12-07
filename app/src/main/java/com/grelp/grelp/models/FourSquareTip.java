@@ -90,7 +90,7 @@ public class FourSquareTip implements Parcelable {
                 //Foursquare URLs need to be constructed from the prefix and suffix and come
                 //in two dimensions (30x30 or 110x110) which also needs to be added to the URI
                 //to retrieve the final photo
-                photoUrl = photo.getString("prefix") + "30x30" + photo.getString("suffix");
+                photoUrl = photo.getString("prefix") + "100x100" + photo.getString("suffix");
             }
             FourSquareTip tip = new FourSquareTip(text, timestamp, likes, photoUrl,
                     userName);

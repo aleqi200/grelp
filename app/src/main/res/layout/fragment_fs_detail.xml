@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/fs_logo"
             android:layout_marginTop="10dp"
-            android:layout_marginLeft="25dp"
+            android:layout_marginLeft="10dp"
             android:id="@+id/ivFourSquareLogo" />
 
         <TextView
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="@string/fs_title"
-            android:textSize="12sp"
+            android:textSize="14sp"
             android:id="@+id/tvFourSquare"
             android:gravity="center"
             android:layout_marginTop="20dp"
@@ -42,33 +42,58 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="@color/colorPrimary"
             android:textSize="12sp"
+            android:gravity="center_vertical|center_horizontal"
+            android:id="@+id/tvFSRatingMessage"
+            android:text="@string/fs_rating_title"
+            android:layout_below="@+id/ivFourSquareLogo"
+            android:layout_toRightOf="@+id/ivFourSquareProfile"
+            android:layout_toEndOf="@+id/ivFourSquareProfile" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/cardview_light_background"
+            android:textSize="12sp"
+            android:gravity="center_vertical|center_horizontal"
             android:id="@+id/tvRatingCount"
-            android:background="@drawable/green_border"
-            android:layout_marginRight="50dp"
-            android:layout_alignBottom="@+id/tvFourSquare"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+            android:background="@drawable/solid_green_border"
+            android:layout_below="@+id/tvFSRatingMessage"
+            android:layout_toRightOf="@+id/ivFourSquareProfile"
+            android:layout_toEndOf="@+id/ivFourSquareProfile" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Small Text"
-            android:textSize="6sp"
+            android:textSize="8sp"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="5dp"
             android:id="@+id/tvFourSquareRatings"
-            android:layout_below="@+id/tvRatingCount"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="30dp">
+            android:layout_alignTop="@+id/tvRatingCount"
+            android:layout_toRightOf="@+id/tvRatingCount">
         </TextView>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:id="@+id/divider_review"
+            android:paddingTop="30dp"
+            android:layout_marginTop="20dp"
+            android:background="?android:attr/listDivider"
+            android:layout_below="@+id/tvRatingCount"
+            android:layout_toRightOf="@+id/ivFourSquareProfile"
+            android:layout_toEndOf="@+id/ivFourSquareProfile"
+            android:paddingBottom="10dp" />
+
         <ImageView
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
             android:paddingRight="5dp"
             android:id="@+id/ivFourSquareProfile"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="40dp"
             android:layout_below="@+id/ivFourSquareLogo"
             android:layout_alignLeft="@+id/ivFourSquareLogo"
             android:layout_alignStart="@+id/ivFourSquareLogo" />
@@ -77,12 +102,78 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textSize="10sp"
+            android:textSize="14sp"
+            android:textStyle="bold"
             android:id="@+id/tvFourSquareTip"
-            android:layout_marginTop="10dp"
-            android:layout_below="@+id/ivFourSquareLogo"
+            android:layout_below="@+id/tvFSUserName"
+            android:layout_marginTop="20dp"
+            android:layout_alignLeft="@+id/tvFSUserName"
+            android:layout_alignStart="@+id/tvFSUserName"
+            android:layout_marginRight="10dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/tvFSUserName"
+            android:gravity="center_vertical"
+            android:layout_below="@id/divider_review"
+            android:layout_marginTop="5dp"
             android:layout_toRightOf="@+id/ivFourSquareProfile"
             android:layout_toEndOf="@+id/ivFourSquareProfile" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:id="@+id/divider_tip"
+            android:paddingTop="30dp"
+            android:layout_marginTop="20dp"
+            android:background="?android:attr/listDivider"
+            android:layout_below="@+id/tvFourSquareTip"
+            android:layout_toRightOf="@+id/ivFourSquareProfile"
+            android:layout_toEndOf="@+id/ivFourSquareProfile"
+            android:paddingBottom="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/tvFSPhrasesHeader"
+            android:text="@string/fs_phrases_header"
+            android:textSize="14sp"
+            android:gravity="center_vertical"
+            android:layout_below="@id/divider_tip"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@+id/ivFourSquareProfile"
+            android:layout_toEndOf="@+id/ivFourSquareProfile"
+            android:layout_marginRight="10dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/tvFSPhrases"
+            android:background="@drawable/solid_grey_border"
+            android:gravity="center_vertical"
+            android:layout_below="@id/tvFSPhrasesHeader"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@+id/ivFourSquareProfile"
+            android:layout_toEndOf="@+id/ivFourSquareProfile"
+            android:layout_marginRight="10dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/open_foursquare"
+            android:textColor="@color/green_text"
+            android:textStyle="bold"
+            android:id="@+id/tvOpenFourSquare"
+            android:layout_above="@+id/tvNumberOfReviews"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_below="@+id/tvFourSquare" />
 
     </RelativeLayout>
 </android.support.v7.widget.CardView>

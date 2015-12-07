@@ -27,5 +27,8 @@
     <string name="yelp_ratings">Yelp Reviews</string>
     <string name="open_yelp"><![CDATA[Open Yelp >]]></string>
     <string name="open_in_google"><![CDATA[Open Google >]]></string>
+    <string name="open_foursquare"><![CDATA[Open FourSquare >]]></string>
     <string name="google_label">Google</string>
+    <string name="fs_rating_title">Four Square Rating</string>
+    <string name="fs_phrases_header">What they said</string>
 </resources>
