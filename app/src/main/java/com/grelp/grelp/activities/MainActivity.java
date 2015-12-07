@@ -13,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -44,8 +45,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener
-{
+        LocationListener {
     private static final String LOG_TAG = MainActivity.class.getName();
     private static final int PERMISSION_REQUEST_CODE = 1;
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
@@ -75,11 +75,14 @@ public class MainActivity extends AppCompatActivity implements
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setLogo(R.mipmap.ic_launcher);
         setSupportActionBar(toolbar);
+        final ActionBar ab = getSupportActionBar();
+        if (ab != null) {
+            ab.setHomeAsUpIndicator(null);
+            ab.setDisplayHomeAsUpEnabled(true);
+        }
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        if(!checkPermission()) {
-            requestPermission();
-        }
+
         connectClient();
 
         showDealList();
@@ -150,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements
         transaction.commit();
         fragmentManager.executePendingTransactions();
 
-        if(mGoogleApiClient.isConnected()) {
+        if (mGoogleApiClient.isConnected()) {
             Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if(location != null) {
                 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
@@ -170,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements
         transaction.commit();
         fragmentManager.executePendingTransactions();
 
-        if(mGoogleApiClient.isConnected()) {
+        if (mGoogleApiClient.isConnected()) {
             Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if(location != null) {
                 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
@@ -202,6 +205,7 @@ public class MainActivity extends AppCompatActivity implements
             case PERMISSION_REQUEST_CODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Snackbar.make(getCurrentFocus(), "Permission Granted, Now you can access location data.", Snackbar.LENGTH_LONG).show();
+                    startActivity(new Intent(this, MainActivity.class)); // refresh
                 } else {
                     Snackbar.make(getCurrentFocus(), "Permission Denied, You cannot access location data.", Snackbar.LENGTH_LONG).show();
                 }
@@ -264,23 +268,21 @@ public class MainActivity extends AppCompatActivity implements
     public void onConnected(Bundle dataBundle) {
         // Display the connection status
         //LocationServices.FusedLocationApi.flushLocations(mGoogleApiClient);
+        if (!checkPermission()) {
+            requestPermission();
+            return;
+        }
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
         if (location != null) {
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
-            if(dealMapFragment != null && dealMapFragment.getActivity() != null) {
+        if (dealMapFragment != null && dealMapFragment.getActivity() != null) {
                 dealMapFragment.updateLocation(latLng);
             }
-            if(dealListFragment != null && dealListFragment.getActivity() != null) {
+        if (dealListFragment != null && dealListFragment.getActivity() != null) {
                 dealListFragment.setLocation(latLng);
             }
-
-            Toast.makeText(this, "GPS location was found!", Toast.LENGTH_SHORT).show();
-
-        } else {
-            Toast.makeText(this, "Current location was null, enable GPS on emulator!",
-                    Toast.LENGTH_SHORT).show();
         }
 
         startLocationUpdates();
