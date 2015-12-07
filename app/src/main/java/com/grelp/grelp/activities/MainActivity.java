@@ -75,11 +75,6 @@ public class MainActivity extends AppCompatActivity implements
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setLogo(R.mipmap.ic_launcher);
         setSupportActionBar(toolbar);
-        final ActionBar ab = getSupportActionBar();
-        if (ab != null) {
-            ab.setHomeAsUpIndicator(null);
-            ab.setDisplayHomeAsUpEnabled(true);
-        }
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
 
