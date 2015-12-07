@@ -7,10 +7,15 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -44,6 +49,7 @@ public class DealListFragment extends Fragment {
     private GrouponClient grouponClient;
     private LinearLayoutManager mLayoutManager;
     private AlertDialog dialog;
+    private String query = null;
 
     public static DealListFragment newInstance() {
         DealListFragment fragment = new DealListFragment();
@@ -57,6 +63,7 @@ public class DealListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         grouponClient = GrouponClient.getInstance();
     }
 
@@ -74,7 +81,7 @@ public class DealListFragment extends Fragment {
         rvGroupons.addOnScrollListener(new EndlessRecyclerOnScrollListener(mLayoutManager) {
             @Override
             public boolean onLoadMore(int offset) {
-                getGroupons(offset);
+                getGroupons(offset, query);
                 return true;
             }
         });
@@ -86,10 +93,10 @@ public class DealListFragment extends Fragment {
 
     public void setLocation(LatLng latLng) {
         this.latLng = latLng;
-        getGroupons(0);
+        getGroupons(0, query);
     }
 
-    public void getGroupons(int offset) {
+    public void getGroupons(int offset, String query) {
         Log.d(LOG_TAG, "getGroupons(offset = " + offset + ")");
 
         if (!NetworkUtil.isNetworkAvailable(getActivity())) {
@@ -100,7 +107,7 @@ public class DealListFragment extends Fragment {
             return;
         }
 
-        grouponClient.getGroupons(latLng, offset, new GrouponClient.GrouponListener() {
+        grouponClient.getGroupons(query, latLng, offset, new GrouponClient.GrouponListener() {
             @Override
             public void handleGroupons(ArrayList<Groupon> groupons) {
                 if (groupons != null) {
@@ -109,5 +116,27 @@ public class DealListFragment extends Fragment {
                 dialog.dismiss();
             }
         });
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.groupon_fragment_menu, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                DealListFragment.this.query = query;
+                grouponAdapter.clear();
+                getGroupons(0, query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
     }
 }

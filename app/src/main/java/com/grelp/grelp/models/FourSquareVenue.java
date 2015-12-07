@@ -89,7 +89,7 @@ public class FourSquareVenue implements Parcelable {
             }
         }
         JSONObject photoObject = venue.getJSONObject("bestPhoto");
-        String fourSquareUrl = photoObject.getString("prefix") + "300x200" + photoObject.getString("suffix");
+        String fourSquareUrl = photoObject.getString("prefix") + "500x300" + photoObject.getString("suffix");
         FourSquareVenue fourSquareVenue = new FourSquareVenue(id, name, fourSquareUrl,
                 likes, rating, ratingCount, tips, phrases);
         return fourSquareVenue;
