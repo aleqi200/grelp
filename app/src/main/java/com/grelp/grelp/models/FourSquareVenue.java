@@ -18,9 +18,10 @@ public class FourSquareVenue implements Parcelable {
     private int rating;
     private int ratingCount;
     private List<FourSquareTip> tips;
+    private List<FourSquarePhrase> phrases;
 
     public FourSquareVenue(String id, String name, String fourSquareUrl, int likes, int rating,
-                           int ratingCount, List<FourSquareTip> tips) {
+                           int ratingCount, List<FourSquareTip> tips, List<FourSquarePhrase> phrases) {
         this.id = id;
         this.name = name;
         this.fourSquareUrl = fourSquareUrl;
@@ -28,6 +29,7 @@ public class FourSquareVenue implements Parcelable {
         this.rating = rating;
         this.tips = tips;
         this.ratingCount = ratingCount;
+        this.phrases = phrases;
     }
 
     public String getId() {
@@ -50,16 +52,8 @@ public class FourSquareVenue implements Parcelable {
         return fourSquareUrl;
     }
 
-    public void setFourSquareUrl(String fourSquareUrl) {
-        this.fourSquareUrl = fourSquareUrl;
-    }
-
     public int getLikes() {
         return likes;
-    }
-
-    public void setLikes(int likes) {
-        this.likes = likes;
     }
 
     public String getRating() {
@@ -70,16 +64,12 @@ public class FourSquareVenue implements Parcelable {
         return "Based on " + ratingCount + " ratings";
     }
 
-    public void setRating(int rating) {
-        this.rating = rating;
-    }
-
     public List<FourSquareTip> getTips() {
         return tips;
     }
 
-    public void setTips(List<FourSquareTip> tips) {
-        this.tips = tips;
+    public List<FourSquarePhrase> getPhrases() {
+        return phrases;
     }
 
     public static FourSquareVenue fromJSONObject(JSONObject venue) throws JSONException {
@@ -91,17 +81,17 @@ public class FourSquareVenue implements Parcelable {
         List<FourSquareTip> tips = FourSquareTip.fromJSONArray(
                 venue.getJSONObject("tips").getJSONArray("groups"));
         JSONArray phraseArray = venue.optJSONArray("phrases");
-        List<String> phrases = new LinkedList<>();
+        List<FourSquarePhrase> phrases = new LinkedList<>();
         if (phraseArray != null) {
             for (int i = 0; i < phraseArray.length(); i++) {
                 JSONObject phraseObject = phraseArray.getJSONObject(i);
-                phrases.add(phraseObject.getString("phrase"));
+                phrases.add(new FourSquarePhrase(phraseObject.getString("phrase"), phraseObject.getInt("count")));
             }
         }
         JSONObject photoObject = venue.getJSONObject("bestPhoto");
-        String fourSquareUrl = photoObject.getString("prefix") + "200x100" + photoObject.getString("suffix");
+        String fourSquareUrl = photoObject.getString("prefix") + "300x200" + photoObject.getString("suffix");
         FourSquareVenue fourSquareVenue = new FourSquareVenue(id, name, fourSquareUrl,
-                likes, rating, ratingCount, tips);
+                likes, rating, ratingCount, tips, phrases);
         return fourSquareVenue;
     }
 
@@ -120,6 +110,7 @@ public class FourSquareVenue implements Parcelable {
         dest.writeInt(this.rating);
         dest.writeInt(this.ratingCount);
         dest.writeTypedList(tips);
+        dest.writeTypedList(phrases);
     }
 
     private FourSquareVenue(Parcel in) {
@@ -130,6 +121,7 @@ public class FourSquareVenue implements Parcelable {
         this.rating = in.readInt();
         this.ratingCount = in.readInt();
         this.tips = in.createTypedArrayList(FourSquareTip.CREATOR);
+        this.phrases = in.createTypedArrayList(FourSquarePhrase.CREATOR);
     }
 
     public static final Creator<FourSquareVenue> CREATOR = new Creator<FourSquareVenue>() {

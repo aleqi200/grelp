@@ -25,7 +25,7 @@
         android:textColor="@color/primary_light"
         android:id="@+id/tvRatingCount"
         android:gravity="center_vertical|center_horizontal"
-        android:background="@drawable/solid_border"
+        android:background="@drawable/solid_green_border"
         android:layout_below="@+id/ivFourSquare"
         android:layout_centerHorizontal="true" />
 
