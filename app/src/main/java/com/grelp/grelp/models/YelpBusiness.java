@@ -80,9 +80,9 @@ public class YelpBusiness implements Parcelable {
         }
         String ratingImgUrl = jsonObject.getString("rating_img_url");
         String name = jsonObject.getString("name");
-        String phone = jsonObject.getString("display_phone");
+        String phone = jsonObject.optString("display_phone", null);
         if (phone == null) {
-            phone = jsonObject.getString("phone");
+            phone = jsonObject.optString("phone", "");
         }
         int reviewCount = jsonObject.getInt("review_count");
         double rating = jsonObject.getDouble("rating");

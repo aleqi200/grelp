@@ -1,6 +1,5 @@
 package com.grelp.grelp.data;
 
-import android.location.Location;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -56,13 +55,16 @@ public class GrouponClient {
         return buffer.toString();
     }
 
-    public void getDeals(AsyncHttpResponseHandler handler, LatLng location, int offset) {
+    public void getDeals(AsyncHttpResponseHandler handler, LatLng location, int offset, String query) {
         RequestParams requestParams = new RequestParams();
         String dateTime = dateFormat.format(new Date());
         requestParams.add("datetime", dateTime);
         requestParams.add("context", DEALS_SEARCH_CONTEXT);
         requestParams.add("client_id", GAPI_CLIENT_ID);
         requestParams.add("consumer_id", CONSUMER_ID);
+        if (query != null) {
+            requestParams.add("query", query);
+        }
         if (location != null) {
             requestParams.add("lat", "" + location.latitude);
             requestParams.add("lng", "" + location.longitude);
@@ -104,7 +106,8 @@ public class GrouponClient {
         void handleGroupons(ArrayList<Groupon> groupons);
     }
 
-    public void getGroupons(LatLng location, int offset, final GrouponListener listener) {
+    public void getGroupons(String query, LatLng location, int offset,
+                            final GrouponListener listener) {
         getDeals(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -123,6 +126,6 @@ public class GrouponClient {
                 Log.e(LOG_TAG, "Error while retrieving groupons" + Log.getStackTraceString(throwable));
                 listener.handleGroupons(null);
             }
-        }, location, offset);
+        }, location, offset, query);
     }
 }

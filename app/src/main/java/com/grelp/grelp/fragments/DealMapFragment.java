@@ -83,7 +83,7 @@ public class DealMapFragment extends Fragment implements GrouponClient.GrouponLi
 
             // Map is ready
             //Toast.makeText(getActivity(), "Map Fragment was loaded properly!", Toast.LENGTH_SHORT).show();
-            grouponClient.getGroupons(latLng, 0, this);
+            grouponClient.getGroupons(null, latLng, 0, this);
         } else {
             Log.e(LOG_TAG, "Error - Map was null!!");
         }
@@ -157,7 +157,7 @@ public class DealMapFragment extends Fragment implements GrouponClient.GrouponLi
         if(map != null) {
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 5);
             map.animateCamera(cameraUpdate);
-            grouponClient.getGroupons(latLng, 0, this);
+            grouponClient.getGroupons(null, latLng, 0, this);
         }
     }
 

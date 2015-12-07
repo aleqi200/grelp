@@ -54,4 +54,9 @@ public class GrouponArrayAdapter extends RecyclerView.Adapter<GrouponViewHolder>
     public Groupon getItem(int position) {
         return groupons.get(position);
     }
+
+    public void clear() {
+        groupons.clear();
+        notifyDataSetChanged();
+    }
 }
