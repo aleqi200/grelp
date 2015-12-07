@@ -47,10 +47,12 @@ public class FourSquareDetailFragment extends Fragment {
 
         tvRatingCount.setText(fourSquareVenue.getRating());
         tvFourSquareRatings.setText(fourSquareVenue.getRatingCount());
-        FourSquareTip tip = fourSquareVenue.getTips().get(0);
-        tvFourSquareTip.setText(tip.getText());
-        if (tip.getPhotoUrl() != null) {
-            Picasso.with(getContext()).load(tip.getPhotoUrl()).into(ivFourSquareProfile);
+        if (fourSquareVenue.getTips() != null && fourSquareVenue.getTips().size() > 0) {
+            FourSquareTip tip = fourSquareVenue.getTips().get(0);
+            tvFourSquareTip.setText(tip.getText());
+            if (tip.getPhotoUrl() != null) {
+                Picasso.with(getContext()).load(tip.getPhotoUrl()).into(ivFourSquareProfile);
+            }
         }
         return view;
     }
