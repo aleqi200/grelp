@@ -223,6 +223,8 @@ public class GrouponDetailActivity extends AppCompatActivity {
                         try {
                             JSONArray businesses = response.getJSONArray("businesses");
                             if (businesses.length() == 0) {
+                                noDataFor(R.id.yelp_fragment, "Yelp");
+                                noDataFor(R.id.fs_fragment, "Four Square");
                                 return;
                             }
                             JSONObject businessObject = businesses.getJSONObject(0);
@@ -237,6 +239,18 @@ public class GrouponDetailActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                        noDataFor(R.id.yelp_fragment, "Yelp");
+                        Log.e(LOG_TAG, "Error while parsing json object: " + errorResponse, throwable);
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        noDataFor(R.id.yelp_fragment, "Yelp");
+                        Log.e(LOG_TAG, "Error while parsing json object: " + responseString, throwable);
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
                         noDataFor(R.id.yelp_fragment, "Yelp");
                         Log.e(LOG_TAG, "Error while parsing json object: " + errorResponse, throwable);
                     }
@@ -264,6 +278,18 @@ public class GrouponDetailActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                noDataFor(R.id.yelp_fragment, "Yelp");
+                Log.e(LOG_TAG, "Error while parsing json object: " + errorResponse, throwable);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                noDataFor(R.id.yelp_fragment, "Yelp");
+                Log.e(LOG_TAG, "Error while parsing json object: " + responseString, throwable);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
                 noDataFor(R.id.yelp_fragment, "Yelp");
                 Log.e(LOG_TAG, "Error while parsing json object: " + errorResponse, throwable);
             }

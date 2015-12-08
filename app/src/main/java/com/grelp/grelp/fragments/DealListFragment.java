@@ -81,7 +81,6 @@ public class DealListFragment extends Fragment {
 
     public void setLocation(LatLng latLng) {
         this.latLng = latLng;
-        grouponAdapter.clear();
         getGroupons(0, query);
     }
 
