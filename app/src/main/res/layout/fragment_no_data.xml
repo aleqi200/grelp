@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:clickable="false">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:id="@+id/divider_review"
+        android:paddingTop="30dp"
+        android:layout_marginTop="20dp"
+        android:background="?android:attr/listDivider"
+        android:layout_above="@+id/tvNoData"
+        android:paddingBottom="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_data_avail_for"
+        android:id="@+id/tvNoData"
+        android:layout_alignParentTop="true"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>
