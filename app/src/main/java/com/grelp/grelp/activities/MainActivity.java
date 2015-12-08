@@ -143,9 +143,9 @@ public class MainActivity extends AppCompatActivity implements
 
         if (mGoogleApiClient.isConnected()) {
             Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            if(location != null) {
+            if (location != null) {
                 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                dealListFragment.setLocation(latLng);
+                dealListFragment.setLocationOnStartup(latLng);
             }
         }
     }
@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements
 
         if (mGoogleApiClient.isConnected()) {
             Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            if(location != null) {
+            if (location != null) {
                 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                 dealMapFragment.updateLocation(latLng);
             }
@@ -265,11 +265,8 @@ public class MainActivity extends AppCompatActivity implements
         if (location != null) {
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
-        if (dealMapFragment != null && dealMapFragment.getActivity() != null) {
+            if (dealMapFragment != null && dealMapFragment.getActivity() != null) {
                 dealMapFragment.updateLocation(latLng);
-            }
-        if (dealListFragment != null && dealListFragment.getActivity() != null) {
-                dealListFragment.setLocationOnStartup(latLng);
             }
         }
 
@@ -295,10 +292,10 @@ public class MainActivity extends AppCompatActivity implements
 
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
-        if(dealMapFragment != null && dealMapFragment.getActivity() != null) {
+        if (dealMapFragment != null && dealMapFragment.getActivity() != null) {
             dealMapFragment.updateLocation(latLng);
         }
-        if(dealListFragment != null && dealListFragment.getActivity() != null) {
+        if (dealListFragment != null && dealListFragment.getActivity() != null) {
             dealListFragment.setLocation(latLng);
         }
     }
