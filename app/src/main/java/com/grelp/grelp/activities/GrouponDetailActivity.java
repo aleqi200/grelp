@@ -29,8 +29,12 @@ import com.grelp.grelp.data.GrouponClient;
 import com.grelp.grelp.data.YelpAPI;
 import com.grelp.grelp.fragments.FourSquareDetailFragment;
 import com.grelp.grelp.fragments.GooglePlacesFragment;
+import com.grelp.grelp.fragments.NoDataFragment;
 import com.grelp.grelp.fragments.YelpDetailFragment;
 import com.grelp.grelp.fragments.YelpDetailFragmentMinimum;
+import com.grelp.grelp.fragments.loading.FoursquareLoadingFragment;
+import com.grelp.grelp.fragments.loading.GoogleLoadingFragment;
+import com.grelp.grelp.fragments.loading.YelpLoadingFragment;
 import com.grelp.grelp.models.FourSquareVenue;
 import com.grelp.grelp.models.Groupon;
 import com.grelp.grelp.models.GrouponMerchant;
@@ -86,6 +90,12 @@ public class GrouponDetailActivity extends AppCompatActivity {
             ab.setHomeAsUpIndicator(null);
             ab.setDisplayHomeAsUpEnabled(true);
         }
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.yelp_fragment, YelpLoadingFragment.newInstance());
+        transaction.replace(R.id.fs_fragment, FoursquareLoadingFragment.newInstance());
+        transaction.replace(R.id.places_fragment, GoogleLoadingFragment.newInstance());
+        transaction.commit();
         grouponClient = GrouponClient.getInstance();
         googlePlacesAPI = new GooglePlacesAPI(this);
         fourSquareClient = FourSquareClient.getInstance();
@@ -186,10 +196,19 @@ public class GrouponDetailActivity extends AppCompatActivity {
                     transaction.replace(R.id.places_fragment, GooglePlacesFragment.newInstance(place));
                     transaction.commit();
                 } else {
+                    noDataFor(R.id.places_fragment, "Google Places");
                     Log.d("GOOGLE_PLACES_API", "Failed to find place via google: " + merchant.getName());
                 }
             }
         });
+    }
+
+    protected void noDataFor(int places_fragment, String service) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.setCustomAnimations(R.anim.animation_fade_in, R.anim.animation_fade_out);
+        transaction.replace(places_fragment, NoDataFragment.newInstance(service));
+        transaction.commit();
     }
 
     private void searchForMerchantOnYelp() {
@@ -211,12 +230,14 @@ public class GrouponDetailActivity extends AppCompatActivity {
                             getYelpReviews(businessId);
                             getFourSquareVenue();
                         } catch (JSONException e) {
+                            noDataFor(R.id.yelp_fragment, "Yelp");
                             Log.e(LOG_TAG, "Error while parsing json object: " + response, e);
                         }
                     }
 
                     @Override
                     public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                        noDataFor(R.id.yelp_fragment, "Yelp");
                         Log.e(LOG_TAG, "Error while parsing json object: " + errorResponse, throwable);
                     }
                 });
@@ -236,12 +257,14 @@ public class GrouponDetailActivity extends AppCompatActivity {
                     transaction.commit();
 
                 } catch (JSONException e) {
+                    noDataFor(R.id.yelp_fragment, "Yelp");
                     Log.e(LOG_TAG, "Error while parsing json object: " + e.getMessage(), e);
                 }
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                noDataFor(R.id.yelp_fragment, "Yelp");
                 Log.e(LOG_TAG, "Error while parsing json object: " + errorResponse, throwable);
             }
         });
@@ -258,6 +281,7 @@ public class GrouponDetailActivity extends AppCompatActivity {
                 try {
                     JSONArray venues = response.getJSONObject("response").getJSONArray("venues");
                     if (venues.length() == 0) {
+                        noDataFor(R.id.fs_fragment, "Foursquare");
                         return;
                     }
                     final JSONObject venue = venues.getJSONObject(0);
@@ -273,22 +297,26 @@ public class GrouponDetailActivity extends AppCompatActivity {
                                 transaction.replace(R.id.fs_fragment, FourSquareDetailFragment.newInstance(fourSquareVenue));
                                 transaction.commit();
                             } catch (JSONException e) {
+                                noDataFor(R.id.fs_fragment, "Foursquare");
                                 Log.e(LOG_TAG, "Error while parsing json object:", e);
                             }
                         }
 
                         @Override
                         public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                            noDataFor(R.id.fs_fragment, "Foursquare");
                             Log.e(LOG_TAG, "Error while parsing json object", throwable);
                         }
                     });
                 } catch (JSONException e) {
+                    noDataFor(R.id.fs_fragment, "Foursquare");
                     Log.e(LOG_TAG, "Error while parsing json object", e);
                 }
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject jsonObject) {
+                noDataFor(R.id.fs_fragment, "Foursquare");
                 Log.e(LOG_TAG, "Error while parsing json object", throwable);
             }
         });
