@@ -13,7 +13,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -27,20 +26,14 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.grelp.grelp.R;
 import com.grelp.grelp.fragments.DealListFragment;
 import com.grelp.grelp.fragments.DealMapFragment;
 import com.grelp.grelp.util.NetworkUtil;
-
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
@@ -164,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements
         if (dealMapFragment == null) {
             dealMapFragment = DealMapFragment.newInstance();
         }
-        transaction.replace(R.id.container, dealMapFragment);
+        transaction.replace(R.id.container, dealMapFragment, "map");
         transaction.commit();
         fragmentManager.executePendingTransactions();
 

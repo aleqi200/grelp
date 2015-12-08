@@ -21,13 +21,70 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textSize="14sp"
         android:textStyle="bold"
-        android:transitionName="dealTitle" />
+        android:transitionName="dealTitle"
+        android:text="Title For Deal" />
+
+    <TextView
+        android:id="@+id/tvMerchantName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="30dp"
+        android:layout_marginTop="10dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textStyle="bold"
+        android:layout_below="@+id/tvDetailedTitle"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="Merchant Name" />
+
+    <ImageView
+        android:id="@+id/ivGreenPlace"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_green_place"
+        android:layout_alignTop="@+id/tvLocationSelected"
+        android:paddingLeft="10dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/tvLocationSelected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:singleLine="true"
+        android:text="1401 N Shoreline Blvd, Mountain V..."
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:paddingTop="8dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_below="@+id/tvMerchantName"
+        android:layout_toRightOf="@+id/ivGreenPlace"
+        android:layout_toEndOf="@+id/ivGreenPlace" />
+
+    <TextView
+        android:id="@+id/tvNumberOfLocations"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:text="No Location"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:paddingRight="10dp"
+        android:textColor="@color/grey_medium_50p"
+        android:layout_alignBottom="@+id/tvLocationSelected"
+        android:layout_toRightOf="@+id/tvLocationSelected"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <HorizontalScrollView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/scOptions"
-        android:layout_below="@+id/tvDetailedTitle"
+        android:layout_below="@+id/tvLocationSelected"
         android:scrollIndicators="bottom"
         android:fillViewport="true"
         android:layout_centerHorizontal="true">

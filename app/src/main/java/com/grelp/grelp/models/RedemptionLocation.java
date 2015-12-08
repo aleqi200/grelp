@@ -154,7 +154,7 @@ public class RedemptionLocation implements Parcelable {
                 .setLng(jsonObject.getDouble("lng"))
                 .setName(jsonObject.getString("name"))
                 .setStreetAddress1(jsonObject.getString("streetAddress1"))
-                .setStreetAddress2(jsonObject.getString("streetAddress2"))
+                .setStreetAddress2(jsonObject.isNull("streetAddress2") ? jsonObject.getString("city") : jsonObject.getString("streetAddress2"))
                 .setState(jsonObject.getString("state"))
                 .setPostalCode(jsonObject.getString("postalCode"))
                 .build();
