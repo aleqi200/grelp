@@ -194,15 +194,7 @@
             android:layout_toEndOf="@+id/tvYelpText"
             android:padding="2dp"
             android:paddingTop="10dp"
-            android:paddingBottom="15dp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:padding="2dp"
-            android:layout_marginTop="10dp"
-            android:layout_height="2dp"
-            android:layout_below="@+id/tvCategory"
-            android:background="?android:attr/listDivider" />
+            android:paddingBottom="20dp" />
 
     </RelativeLayout>
 
