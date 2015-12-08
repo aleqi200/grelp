@@ -54,4 +54,9 @@ public class FourSquarePhrase implements Parcelable {
             return new FourSquarePhrase[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return phrase;
+    }
 }

@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements
     private DealMapFragment dealMapFragment;
 
     private GoogleApiClient mGoogleApiClient;
-    private static final long UPDATE_INTERVAL = 1000 * 30;  /* 30 secs */
+    private static final long UPDATE_INTERVAL = 60000 * 180;  /* 30 secs */
     private static final long FASTEST_INTERVAL = 5000; /* 5 secs */
     private static final long MIN_DISTANCE = 200; /* 200m */
 

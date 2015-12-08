@@ -54,7 +54,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/open_in_google"
-        android:textColor="@color/blue_text"
+        android:textColor="@color/green_text"
         android:textStyle="bold"
         android:id="@+id/tvOpenGoogle"
         android:clickable="true"
@@ -100,5 +100,16 @@
         android:gravity="center_vertical"
         android:textSize="18sp"
         android:onClick="onClickPhone" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:padding="2dp"
+        android:id="@+id/divider_buy"
+        android:layout_below="@+id/rbRating"
+        android:background="?android:attr/listDivider"
+        />
 
 </RelativeLayout>
