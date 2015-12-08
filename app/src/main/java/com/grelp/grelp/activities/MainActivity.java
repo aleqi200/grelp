@@ -269,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements
                 dealMapFragment.updateLocation(latLng);
             }
         if (dealListFragment != null && dealListFragment.getActivity() != null) {
-                dealListFragment.setLocation(latLng);
+                dealListFragment.setLocationOnStartup(latLng);
             }
         }
 
