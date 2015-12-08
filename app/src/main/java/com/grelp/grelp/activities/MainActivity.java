@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements
 
         connectClient();
 
-        showDealList();
+        showDealList(true);
     }
 
     protected void connectClient() {
@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_list_view) {
-            showDealList();
+            showDealList(true);
         }
         if (id == R.id.action_show_map) {
             showMap();
@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-    private void showDealList() {
+    private void showDealList(boolean refresh) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.setCustomAnimations(R.anim.animation_fade_in, R.anim.animation_fade_out);
@@ -145,7 +145,11 @@ public class MainActivity extends AppCompatActivity implements
             Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if (location != null) {
                 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                dealListFragment.setLocationOnStartup(latLng);
+                if (refresh) {
+                    dealListFragment.setLocation(latLng);
+                } else {
+                    dealListFragment.setLocationOnStartup(latLng);
+                }
             }
         }
     }
