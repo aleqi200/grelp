@@ -100,15 +100,6 @@ public class FourSquareDetailFragment extends Fragment {
         if (fourSquareVenue.getPhrases() != null && fourSquareVenue.getPhrases().size() > 0) {
             List<FourSquarePhrase> phrases = fourSquareVenue.getPhrases();
             tvFSPhrases.setText(StringUtil.join(", ", phrases));
-            StringBuffer phraseBuffer = new StringBuffer();
-            for(int i = 0 ; i < phrases.size(); i ++) {
-                phraseBuffer.append(phrases.get(i).getPhrase());
-                phraseBuffer.append(" | ");
-                if (i == 3) {
-                    break;
-                }
-            }
-            tvFSPhrases.setText(phraseBuffer.toString());
         } else {
             tvFSPhrases.setVisibility(View.GONE);
         }
