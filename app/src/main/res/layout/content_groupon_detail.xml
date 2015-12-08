@@ -23,20 +23,30 @@
         android:textStyle="bold"
         android:transitionName="dealTitle" />
 
-    <LinearLayout
-        android:id="@+id/llDealOptions"
+    <HorizontalScrollView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/scOptions"
         android:layout_below="@+id/tvDetailedTitle"
-        android:layout_marginBottom="3dip"
-        android:layout_marginTop="10dp"
-        android:orientation="vertical" />
+        android:scrollIndicators="bottom"
+        android:fillViewport="true"
+        android:layout_centerHorizontal="true">
+
+        <LinearLayout
+            android:id="@+id/llDealOptions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dip"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal" />
+
+    </HorizontalScrollView>
 
     <FrameLayout
         android:id="@+id/yelp_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/llDealOptions" />
+        android:layout_below="@+id/scOptions" />
 
     <FrameLayout
         android:id="@+id/fs_fragment"
