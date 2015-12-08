@@ -22,6 +22,11 @@
         <item quantity="one">%d review</item>
         <item quantity="other">%d reviews</item>
     </plurals>
+    <plurals name="number_of_locations">
+        <item quantity="zero">No Locations</item>
+        <item quantity="one">%d Location</item>
+        <item quantity="other">%d Locations</item>
+    </plurals>
     <string name="title_activity_four_square">FourSquareActivity</string>
     <string name="yelp">Yelp</string>
     <string name="yelp_ratings">Yelp Reviews</string>

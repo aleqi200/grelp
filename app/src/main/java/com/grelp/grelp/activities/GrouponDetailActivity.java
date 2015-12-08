@@ -1,6 +1,7 @@
 package com.grelp.grelp.activities;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ import com.grelp.grelp.models.GrouponOption;
 import com.grelp.grelp.models.ParcelablePlace;
 import com.grelp.grelp.models.RedemptionLocation;
 import com.grelp.grelp.models.YelpBusiness;
+import com.grelp.grelp.util.StringUtil;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.squareup.picasso.Picasso;
 
@@ -45,6 +47,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 
 public class GrouponDetailActivity extends AppCompatActivity {
@@ -60,6 +65,9 @@ public class GrouponDetailActivity extends AppCompatActivity {
 
     private ImageView ivDetailedImage;
     private TextView tvDetailedTitle;
+    private TextView tvMerchantName;
+    private TextView tvLocationSelected;
+    private TextView tvNumberOfLocations;
     private LinearLayout llDealOptions;
     private Button btnBuy;
 
@@ -99,11 +107,26 @@ public class GrouponDetailActivity extends AppCompatActivity {
     private void setupViews() {
         ivDetailedImage = (ImageView) findViewById(R.id.ivDetailedImage);
         tvDetailedTitle = (TextView) findViewById(R.id.tvDetailedTitle);
+        tvMerchantName = (TextView) findViewById(R.id.tvMerchantName);
+        tvLocationSelected = (TextView) findViewById(R.id.tvLocationSelected);
+        tvNumberOfLocations = (TextView) findViewById(R.id.tvNumberOfLocations);
         llDealOptions = (LinearLayout) findViewById(R.id.llDealOptions);
         btnBuy = (Button) findViewById(R.id.btnBuy);
 
         //Setup groupon detailed view
         tvDetailedTitle.setText(groupon.getTitle());
+        tvMerchantName.setText(groupon.getMerchant().getName());
+        LinkedList<RedemptionLocation> locations = new LinkedList<>(groupon.getUniqueRedemptionLocations());
+        RedemptionLocation firstRedemptionLocation = locations.getFirst();
+        String streetPlusCity = StringUtil.join(", ", firstRedemptionLocation.getStreetAddress1(), firstRedemptionLocation.getStreetAddress2());
+        String locationString = StringUtil.join(" ", streetPlusCity, firstRedemptionLocation.getState(), firstRedemptionLocation.getPostalCode());
+//        if (locationString.length() > 32) {
+//            locationString = locationString.substring(0, 32) + "...";
+//        }
+        tvLocationSelected.setText(locationString);
+        Resources res = getResources();
+        String locationsCount = res.getQuantityString(R.plurals.number_of_locations, locations.size(), locations.size());
+        tvNumberOfLocations.setText(locationsCount);
         Picasso.with(GrouponDetailActivity.this).load(groupon.getGrid4ImageUrl()).into(ivDetailedImage);
         for (GrouponOption option : groupon.getOptions()) {
             View childView = LayoutInflater.from(getBaseContext()).inflate(R.layout.item_groupon_option, null);
@@ -286,9 +309,6 @@ public class GrouponDetailActivity extends AppCompatActivity {
                 lat = groupon.getDivision().getLat(); // resort to division then at last
                 lng = groupon.getDivision().getLng();
             }
-        }
-        if (lng == 0) {
-
         }
         return Pair.create(lat, lng);
     }
