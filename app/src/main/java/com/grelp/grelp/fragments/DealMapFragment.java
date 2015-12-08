@@ -30,6 +30,8 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class DealMapFragment extends Fragment implements GrouponClient.GrouponListener
 {
@@ -135,19 +137,19 @@ public class DealMapFragment extends Fragment implements GrouponClient.GrouponLi
     }
 
     @Override
-    public void handleGroupons(ArrayList<Groupon> groupons) {
-        this.groupons = groupons;
+    public void handleGroupons(ArrayList<Groupon> newGroupons) {
+        this.groupons.addAll(newGroupons);
         map.clear();
 
         int i = 0;
 
-        if(groupons != null && !groupons.isEmpty()) {
-            for (Groupon groupon : groupons) {
+        if(groupons != null && !newGroupons.isEmpty()) {
+            for (Groupon groupon : newGroupons) {
                 createMarker(i, groupon);
                 i++;
             }
 
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(groupons.get(0).getLat(), groupons.get(0).getLng()), 5);
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(newGroupons.get(0).getLat(), newGroupons.get(0).getLng()), 5);
             map.animateCamera(cameraUpdate);
         }
     }

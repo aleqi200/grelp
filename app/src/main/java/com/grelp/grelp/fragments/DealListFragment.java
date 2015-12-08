@@ -1,10 +1,6 @@
 package com.grelp.grelp.fragments;
 
 import android.app.AlertDialog;
-import android.content.Context;
-import android.location.Location;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
@@ -18,7 +14,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -28,15 +23,8 @@ import com.grelp.grelp.data.GrouponClient;
 import com.grelp.grelp.listeners.EndlessRecyclerOnScrollListener;
 import com.grelp.grelp.models.Groupon;
 import com.grelp.grelp.util.NetworkUtil;
-import com.loopj.android.http.JsonHttpResponseHandler;
-
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import dmax.dialog.SpotsDialog;
 
@@ -93,6 +81,7 @@ public class DealListFragment extends Fragment {
 
     public void setLocation(LatLng latLng) {
         this.latLng = latLng;
+        grouponAdapter.clear();
         getGroupons(0, query);
     }
 
@@ -138,5 +127,9 @@ public class DealListFragment extends Fragment {
             }
         });
 
+    }
+
+    public void setLocationOnStartup(LatLng latLng) {
+        this.latLng = latLng;
     }
 }
