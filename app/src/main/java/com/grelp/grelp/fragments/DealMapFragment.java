@@ -36,6 +36,7 @@ import java.util.Set;
 public class DealMapFragment extends Fragment implements GrouponClient.GrouponListener
 {
     private final static String LOG_TAG = "DealMap";
+    private static final int DEFAULT_ZOOM = 10;
 
     private ArrayList<Groupon> groupons = new ArrayList<>();
     private GoogleMap map;
@@ -149,7 +150,7 @@ public class DealMapFragment extends Fragment implements GrouponClient.GrouponLi
                 i++;
             }
 
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(newGroupons.get(0).getLat(), newGroupons.get(0).getLng()), 5);
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(newGroupons.get(0).getLat(), newGroupons.get(0).getLng()), DEFAULT_ZOOM);
             map.animateCamera(cameraUpdate);
         }
     }
@@ -157,7 +158,7 @@ public class DealMapFragment extends Fragment implements GrouponClient.GrouponLi
     public void updateLocation(LatLng latLng) {
         this.latLng = latLng;
         if(map != null) {
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 5);
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM);
             map.animateCamera(cameraUpdate);
             grouponClient.getGroupons(null, latLng, 0, this);
         }
