@@ -19,6 +19,8 @@ public class GooglePlacesFragment extends Fragment {
     private ParcelablePlace place;
 
     private TextView tvName;
+    private TextView tvPhone;
+    private RatingBar rbRating;
 
     public GooglePlacesFragment() {
         // Required empty public constructor
@@ -47,7 +49,17 @@ public class GooglePlacesFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_google_places, container, false);
 
         tvName = (TextView) v.findViewById(R.id.tvName);
+        tvPhone = (TextView) v.findViewById(R.id.tvPhone);
+        rbRating = (RatingBar) v.findViewById(R.id.rbRating);
+
         tvName.setText(place.name);
+        tvPhone.setText(place.phoneNumber);
+        if(place.rating >= 0) {
+            rbRating.setVisibility(View.VISIBLE);
+            rbRating.setRating(place.rating * 10);
+        } else {
+            rbRating.setVisibility(View.GONE);
+        }
 
         return v;
     }
