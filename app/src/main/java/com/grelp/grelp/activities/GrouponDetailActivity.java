@@ -15,6 +15,7 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -60,7 +61,7 @@ public class GrouponDetailActivity extends AppCompatActivity {
     private ImageView ivDetailedImage;
     private TextView tvDetailedTitle;
     private LinearLayout llDealOptions;
-    private ImageView btnBuy;
+    private Button btnBuy;
 
     private ParcelablePlace place;
 
@@ -99,7 +100,7 @@ public class GrouponDetailActivity extends AppCompatActivity {
         ivDetailedImage = (ImageView) findViewById(R.id.ivDetailedImage);
         tvDetailedTitle = (TextView) findViewById(R.id.tvDetailedTitle);
         llDealOptions = (LinearLayout) findViewById(R.id.llDealOptions);
-        btnBuy = (ImageView) findViewById(R.id.btnBuy);
+        btnBuy = (Button) findViewById(R.id.btnBuy);
 
         //Setup groupon detailed view
         tvDetailedTitle.setText(groupon.getTitle());

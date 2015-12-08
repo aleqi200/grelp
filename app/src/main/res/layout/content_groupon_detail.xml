@@ -33,25 +33,11 @@
         android:layout_marginTop="10dp"
         android:orientation="vertical" />
 
-    <ImageView
-        android:id="@+id/btnBuy"
-        android:layout_width="140dp"
-        android:layout_height="40dp"
-        android:layout_below="@+id/llDealOptions"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/ic_buy" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="?android:attr/listDivider"
-        android:padding="2dp" />
-
     <FrameLayout
         android:id="@+id/yelp_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/btnBuy" />
+        android:layout_below="@+id/llDealOptions" />
 
     <FrameLayout
         android:id="@+id/fs_fragment"
@@ -64,4 +50,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/fs_fragment" />
+
+    <Button
+        android:id="@+id/btnBuy"
+        android:layout_width="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/places_fragment"
+        android:layout_centerHorizontal="true"
+        android:text="@string/buy"
+        style="@style/buy_button" />
+
 </RelativeLayout>

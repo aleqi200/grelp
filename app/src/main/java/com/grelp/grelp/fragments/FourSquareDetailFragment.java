@@ -15,6 +15,7 @@ import com.grelp.grelp.R;
 import com.grelp.grelp.models.FourSquarePhrase;
 import com.grelp.grelp.models.FourSquareTip;
 import com.grelp.grelp.models.FourSquareVenue;
+import com.grelp.grelp.util.StringUtil;
 import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -94,15 +95,7 @@ public class FourSquareDetailFragment extends Fragment {
 
         if (fourSquareVenue.getPhrases() != null && fourSquareVenue.getPhrases().size() > 0) {
             List<FourSquarePhrase> phrases = fourSquareVenue.getPhrases();
-            StringBuffer phraseBuffer = new StringBuffer();
-            for(int i = 0 ; i < phrases.size(); i ++) {
-                phraseBuffer.append(phrases.get(i).getPhrase());
-                phraseBuffer.append(" | ");
-                if (i == 3) {
-                    break;
-                }
-            }
-            tvFSPhrases.setText(phraseBuffer.toString());
+            tvFSPhrases.setText(StringUtil.join(", ", phrases));
         }
         return view;
     }

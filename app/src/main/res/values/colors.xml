@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#4CAF50</color>
+    <color name="colorPrimary">#53A318</color>
     <color name="colorNavyBlue">#3F51B5</color>
     <color name="colorPrimaryDark">#388E3C</color>
     <color name="primary_light">#C8E6C9</color>
@@ -16,8 +16,23 @@
     <color name="yelp_secondary">#af0606</color>
     <color name="card_background">#E6E6E6</color>
     <color name="yellow">#FFF8D000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="grey86">#e5e5e5</color>
+    <color name="grey99">#f8f8f8</color>
+    <color name="grey_dark">#333333</color>
+
 
     <color name="book_loading_background">#ffffff</color>
     <color name="book_loading_book">#ff33b5e5</color>
     <color name="book_loading_page">#ffffff</color>
+
+    <color name="primary_button_background_pressed">@color/colorPrimaryDark</color>
+    <color name="primary_button_background_focused">#80b443</color>
+    <color name="primary_button_background_normal">@color/colorPrimary</color>
+
+    <color name="primary_button_text_pressed">@color/grey86</color>
+    <color name="primary_button_text_focused">@color/grey99</color>
+    <color name="primary_button_text_disabled">@color/white</color>
+    <color name="primary_button_text_normal">@color/white</color>
+
 </resources>
