@@ -1,45 +1,73 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_alignParentLeft="true"
-    tools:context="com.grelp.grelp.activities.FourSquareActivity">
+    android:fitsSystemWindows="true"
+    tools:context=".activities.FourSquareActivity">
 
-
-    <ImageView
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:id="@+id/ivFourSquare"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_height="250dp"
+        android:elevation="2dp"
+        android:id="@+id/appBarLayout"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:fitsSystemWindows="true">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textSize="14sp"
-        android:textColor="@color/primary_light"
-        android:id="@+id/tvRatingCount"
-        android:layout_marginTop="2dp"
-        android:gravity="center_vertical|center_horizontal"
-        android:background="@drawable/solid_green_border"
-        android:layout_below="@+id/ivFourSquare"
-        android:layout_centerHorizontal="true" />
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            app:contentScrim="?attr/colorPrimary"
+            app:expandedTitleMarginEnd="64dp"
+            app:expandedTitleMarginStart="48dp"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="10sp"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:id="@+id/tvFourSquareRatings"
-        android:layout_below="@+id/tvRatingCount"
-        android:layout_centerHorizontal="true" />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:id="@+id/ivFourSquare"
+                android:fitsSystemWindows="true"
+                android:scaleType="centerCrop"
+                android:transitionName="dealImage"
+                app:layout_collapseMode="parallax" />
 
-    <ListView
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textSize="14sp"
+                android:textColor="@color/primary_light"
+                android:id="@+id/tvRatingCount"
+                android:layout_marginTop="2dp"
+                android:gravity="center_vertical|center_horizontal"
+                android:background="@drawable/solid_green_border"
+                android:layout_below="@+id/ivFourSquare"
+                android:layout_centerHorizontal="true" />
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:elevation="2dp"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:layout_collapseMode="pin"
+                />
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+
+    <android.support.v7.widget.RecyclerView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/lvFourSquareTips"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_below="@+id/tvFourSquareRatings"
-        android:layout_centerHorizontal="true" />
-</RelativeLayout>
+        android:layout_centerHorizontal="true">
+    </android.support.v7.widget.RecyclerView>
+
+</android.support.design.widget.CoordinatorLayout>
