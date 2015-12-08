@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Grelp</string>
-    <string name="title_activity_yelp">YelpActivity</string>
     <string name="title_activity_groupon_detail"> </string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment">No data available</string>
     <string name="title_activity_main">Grelp</string>
     <string name="section_format">Map goes here</string>
     <string name="title_activity_map">MapActivity</string>
@@ -22,12 +21,12 @@
         <item quantity="one">%d review</item>
         <item quantity="other">%d reviews</item>
     </plurals>
+    <string name="title_activity_four_square"> </string>
     <plurals name="number_of_locations">
         <item quantity="zero">No Locations</item>
         <item quantity="one">%d Location</item>
         <item quantity="other">%d Locations</item>
     </plurals>
-    <string name="title_activity_four_square">FourSquareActivity</string>
     <string name="yelp">Yelp</string>
     <string name="yelp_ratings">Yelp Reviews</string>
     <string name="open_yelp"><![CDATA[Open Yelp >]]></string>
