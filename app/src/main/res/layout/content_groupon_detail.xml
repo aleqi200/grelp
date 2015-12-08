@@ -50,6 +50,17 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/fs_fragment" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:paddingTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_below="@+id/places_fragment"
+        android:padding="2dp"
+        android:id="@+id/divider_buy"
+        android:background="?android:attr/listDivider"
+        />
+
     <Button
         android:id="@+id/btnBuy"
         android:layout_width="wrap_content"
@@ -57,7 +68,7 @@
         android:paddingBottom="10dp"
         android:layout_marginBottom="10dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/places_fragment"
+        android:layout_below="@+id/divider_buy"
         android:layout_centerHorizontal="true"
         android:text="@string/buy"
         style="@style/buy_button" />
