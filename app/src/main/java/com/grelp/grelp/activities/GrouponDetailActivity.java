@@ -304,4 +304,10 @@ public class GrouponDetailActivity extends AppCompatActivity {
         mapIntent.setPackage("com.google.android.apps.maps");
         startActivity(mapIntent);
     }
+
+    public void onClickPhone(View view) {
+        Uri uri = Uri.parse("tel:" + place.phoneNumber);
+        Intent callIntent = new Intent (Intent.ACTION_DIAL, uri);
+        startActivity(callIntent);
+    }
 }
