@@ -2,15 +2,16 @@ package com.grelp.grelp.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.grelp.grelp.R;
-import com.grelp.grelp.adapters.FourSquareTipAdapter;
+import com.grelp.grelp.adapters.FourSquareTipsAdapter;
 import com.grelp.grelp.data.FourSquareClient;
 import com.grelp.grelp.models.FourSquareTip;
 import com.grelp.grelp.models.FourSquareVenue;
@@ -21,18 +22,15 @@ import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.LinkedList;
-import java.util.List;
-
 public class FourSquareActivity extends AppCompatActivity {
     private static final String LOG_TAG = "FourSquareActivity";
     private ImageView ivFourSquare;
     private TextView tvRatingCount;
     private TextView tvFourSquareRatings;
-    private ListView lvFourSquareTips;
+    private RecyclerView lvFourSquareTips;
     private FourSquareVenue venue;
-    private List<FourSquareTip> tips;
-    private FourSquareTipAdapter fourSquareTipAdapter;
+    private LinearLayoutManager mLayoutManager;
+    private FourSquareTipsAdapter fourSquareTipAdapter;
     private FourSquareClient fourSquareClient;
 
     @Override
@@ -42,8 +40,9 @@ public class FourSquareActivity extends AppCompatActivity {
         venue = getIntent().getParcelableExtra("venue");
         setupViews();
         fourSquareClient = FourSquareClient.getInstance();
-        tips = new LinkedList<>();
-        fourSquareTipAdapter = new FourSquareTipAdapter(this, tips);
+        mLayoutManager = new LinearLayoutManager(this);
+        lvFourSquareTips.setLayoutManager(mLayoutManager);
+        fourSquareTipAdapter = new FourSquareTipsAdapter(this);
         lvFourSquareTips.setAdapter(fourSquareTipAdapter);
         getFourSquareTipsForVenue();
     }
@@ -52,10 +51,10 @@ public class FourSquareActivity extends AppCompatActivity {
         ivFourSquare = (ImageView) findViewById(R.id.ivFourSquare);
         tvRatingCount = (TextView) findViewById(R.id.tvRatingCount);
         tvFourSquareRatings = (TextView) findViewById(R.id.tvFourSquareRatings);
-        lvFourSquareTips = (ListView) findViewById(R.id.lvFourSquareTips);
+        lvFourSquareTips = (RecyclerView) findViewById(R.id.lvFourSquareTips);
 
         tvRatingCount.setText(venue.getRating());
-        tvFourSquareRatings.setText(venue.getRatingCount());
+        //tvFourSquareRatings.setText(venue.getRatingCount());
         Picasso.with(this).load(venue.getFourSquareUrl()).into(ivFourSquare);
     }
 
@@ -87,8 +86,7 @@ public class FourSquareActivity extends AppCompatActivity {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
                     JSONObject responseObject = response.getJSONObject("response");
-                    tips.addAll(FourSquareTip.fromJSONObject(responseObject.getJSONObject("tips")));
-                    fourSquareTipAdapter.notifyDataSetChanged();
+                    fourSquareTipAdapter.addAll(FourSquareTip.fromJSONObject(responseObject.getJSONObject("tips")));
                 } catch (JSONException e) {
                     Log.e(LOG_TAG, "Error while parsing json object:" + response, e);
                 }

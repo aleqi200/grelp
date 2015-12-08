@@ -28,10 +28,6 @@ import org.json.JSONObject;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-
-/**
- * Created by acampelo on 12/3/15.
- */
 public class GrouponViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     private static final String LOG_TAG = GrouponViewHolder.class.getName();
 
