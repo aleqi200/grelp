@@ -51,7 +51,9 @@ public class FourSquareDetailFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_fs_detail, container, false);
         final FourSquareVenue fourSquareVenue = getArguments().getParcelable("fourSquare");
-
+        if (fourSquareVenue == null) {
+            view.setVisibility(View.GONE);
+        }
         tvFourSquareRatings = (TextView) view.findViewById(R.id.tvFourSquareRatings);
         tvRatingCount = (TextView) view.findViewById(R.id.tvRatingCount);
         tvFourSquareTip = (TextView) view.findViewById(R.id.tvFourSquareTip);
@@ -91,11 +93,24 @@ public class FourSquareDetailFragment extends Fragment {
                         .transform(transformation)
                         .into(ivFourSquareProfile);
             }
+        } else {
+            view.setVisibility(View.GONE);
         }
 
         if (fourSquareVenue.getPhrases() != null && fourSquareVenue.getPhrases().size() > 0) {
             List<FourSquarePhrase> phrases = fourSquareVenue.getPhrases();
             tvFSPhrases.setText(StringUtil.join(", ", phrases));
+            StringBuffer phraseBuffer = new StringBuffer();
+            for(int i = 0 ; i < phrases.size(); i ++) {
+                phraseBuffer.append(phrases.get(i).getPhrase());
+                phraseBuffer.append(" | ");
+                if (i == 3) {
+                    break;
+                }
+            }
+            tvFSPhrases.setText(phraseBuffer.toString());
+        } else {
+            tvFSPhrases.setVisibility(View.GONE);
         }
         return view;
     }
