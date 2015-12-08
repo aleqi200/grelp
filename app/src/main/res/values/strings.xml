@@ -33,4 +33,6 @@
     <string name="fs_phrases_header">What they said</string>
     <string name="example_phone_number">555-5555</string>
     <string name="buy">Buy</string>
+    <string name="google_ratings">Google Rating</string>
+    <string name="no_rating">No rating available</string>
 </resources>

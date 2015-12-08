@@ -13,7 +13,7 @@
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
@@ -46,24 +46,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/hello_blank_fragment"
-            android:id="@+id/tvName"
-            android:gravity="center_vertical"
-            android:textStyle="bold"
-            android:ellipsize="end"
-            android:layout_weight="0.84"
-            android:maxLines="2"
-            android:layout_toLeftOf="@+id/tvOpenGoogle"
-            android:layout_below="@+id/ivGoogleMapImage"
-            android:layout_alignLeft="@+id/ivGoogleMapImage"
-            android:layout_alignStart="@+id/ivGoogleMapImage"
-            android:paddingBottom="5dp"
-            android:layout_marginLeft="70dp"
-            android:textSize="14sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:text="@string/open_in_google"
             android:textColor="@color/green_text"
             android:textStyle="bold"
@@ -71,11 +53,55 @@
             android:clickable="true"
             android:onClick="onClickOpenGoogle"
             android:gravity="right"
-            android:layout_alignTop="@+id/tvName"
+            android:layout_below="@+id/ivGoogleMapImage"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:layout_alignBottom="@+id/tvName"
             android:layout_marginRight="15dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/example_phone_number"
+            android:id="@+id/tvPhone"
+            android:drawableLeft="@android:drawable/ic_menu_call"
+            android:paddingBottom="5dp"
+            android:phoneNumber="true"
+            android:clickable="true"
+            android:inputType="phone"
+            android:textAlignment="gravity"
+            android:gravity="center_vertical"
+            android:textSize="18sp"
+            android:onClick="onClickPhone"
+            android:layout_below="@+id/divider_review"
+            android:layout_alignLeft="@+id/divider_review"
+            android:layout_alignStart="@+id/divider_review" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:id="@+id/divider_review"
+            android:background="?android:attr/listDivider"
+            android:layout_toEndOf="@+id/ivGoogleMapImage"
+            android:layout_below="@+id/tvNoRating"
+            android:layout_alignLeft="@+id/ivGoogleMapImage"
+            android:layout_alignStart="@+id/ivGoogleMapImage"
+            android:layout_marginLeft="70dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/google_ratings"
+            android:id="@+id/tvGoogleRatingsText"
+            android:paddingTop="10dp"
+            android:paddingBottom="15dp"
+            android:padding="3dp"
+            android:layout_alignTop="@+id/tvOpenGoogle"
+            android:layout_alignLeft="@+id/ivGoogleMapImage"
+            android:layout_alignStart="@+id/ivGoogleMapImage"
+            android:layout_marginLeft="70dp" />
 
         <RatingBar
             android:layout_width="wrap_content"
@@ -85,32 +111,22 @@
             android:numStars="5"
             android:rating="0"
             android:stepSize="1"
-            android:layout_alignLeft="@+id/tvPhone"
-            android:layout_alignStart="@+id/tvPhone"
-            android:layout_below="@+id/tvPhone"
             android:progressTint="#d1c634"
-            android:paddingBottom="10dp" />
+            android:paddingBottom="10dp"
+            android:layout_below="@+id/tvGoogleRatingsText"
+            android:layout_alignLeft="@+id/tvGoogleRatingsText"
+            android:layout_alignStart="@+id/tvGoogleRatingsText" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="@string/example_phone_number"
-            android:id="@+id/tvPhone"
-            android:layout_toEndOf="@+id/ivGoogleMapImage"
-            android:layout_toRightOf="@+id/ivGoogleMapImage"
-            android:drawableLeft="@android:drawable/ic_menu_call"
-            android:layout_below="@+id/tvName"
-            android:layout_alignLeft="@+id/tvName"
-            android:layout_alignStart="@+id/tvName"
-            android:paddingBottom="5dp"
-            android:phoneNumber="true"
-            android:clickable="true"
-            android:inputType="phone"
-            android:textAlignment="gravity"
-            android:gravity="center_vertical"
-            android:textSize="18sp"
-            android:onClick="onClickPhone" />
-
+            android:text="@string/no_rating"
+            android:id="@+id/tvNoRating"
+            android:layout_below="@+id/rbRating"
+            android:layout_alignLeft="@+id/rbRating"
+            android:layout_alignStart="@+id/rbRating"
+            android:layout_marginLeft="10dp"
+            android:textStyle="italic" />
     </RelativeLayout>
 </LinearLayout>
